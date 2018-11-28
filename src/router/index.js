@@ -26,5 +26,20 @@ export default new Router({
       name: "register",
       component: _import("register/index")
     },
+	{
+      path: "/exchange",
+      name: "exchange",
+      component: _import("exchange/index")
+    },
+    {
+      path: "/forgetCode",
+      name: "forgetCode",
+      component: _import("forgetCode/index")
+    },
+    {
+      path: "/success",
+      name: "success",
+      component: _import("success/index")
+    },
   ]
 })
