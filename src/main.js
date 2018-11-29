@@ -4,10 +4,10 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Vant from 'vant';
-import vConsole from 'vconsole';
+import vConsole from '@/common/debug/vconsole'//移动端调试
 import 'vant/lib/index.css';
 Vue.use(Vant);
-// Vue.use(vConsole);
+Vue.use(vConsole);
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
