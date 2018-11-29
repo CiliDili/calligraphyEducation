@@ -52,7 +52,7 @@
   </div>
 </template>
 <script>
-  import validator from '../../common/utils/validator'
+  import validator from '@common/utils/validator'
   export default {
     name: 'register001',
     // components: {
@@ -111,18 +111,18 @@
       sendMobileCode() {
         this.validate(errors => {
           if (!errors) {
-            Toast('发送成功');
+            // Toast('发送成功');
             this.countdown = 60;
             this.countdownSubtract();
           }
-        }, 'mobile'),
-        this.validate(errors => {
-          if (!errors) {
-            Toast('yb');
-            this.countdown = 60;
-            this.countdownSubtract();
-          }
-        }, 'name')
+        }, 'mobile')
+        // this.validate(errors => {
+        //   if (!errors) {
+        //     // Toast('yb');
+        //     this.countdown = 60;
+        //     this.countdownSubtract();
+        //   }
+        // }, 'name')
 
       },
       countdownSubtract() {
