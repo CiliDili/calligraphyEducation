@@ -1,5 +1,6 @@
 <template>
   <div class="login_main">
+    <h3>兑换成功</h3>
     <!-- <h1 class="logo"><img src="../../assets/img/logo.png"></h1>
     <el-form :model="loginForm" status-icon :rules="loginRules" ref="loginForm" action="http://tws-dev.fangzhengshufa.com/index.php/Users/login" class="demo-ruleForm">
       <el-form-item  prop="mobileNum">
