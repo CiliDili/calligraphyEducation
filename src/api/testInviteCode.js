@@ -1,7 +1,7 @@
 import request from "@common/request/axios";
-export function login(params) {
+export function testInviteCode(params) {
   return request({
-    url: "/Users/login",
+    url: "/Users/auth_invite_code",
     method: "post",
     data: params
   });

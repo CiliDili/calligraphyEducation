@@ -1,7 +1,7 @@
 import request from "@common/request/axios";
-export function login(params) {
+export function register(params) {
   return request({
-    url: "/Users/login",
+    url: "/Users/phone_reg",
     method: "post",
     data: params
   });

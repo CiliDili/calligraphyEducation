@@ -3,7 +3,7 @@
     <!-- 登录 -->
     <h3>登录</h3>
     <van-cell-group>
-      <van-field v-model="phone" placeholder="请输入手机号" error-message="手机号格式错误" />
+      <van-field v-model="phone" placeholder="手机号" error-message="手机号格式错误" />
       <van-field v-model="password" type="password" placeholder="密码" required />
     </van-cell-group>
     <van-button type="danger" size="large">登录</van-button>
@@ -29,7 +29,7 @@ import Vue from 'vue';
 Vue.use(Field).use(Cell).use(CellGroup).use(Button).use(Icon).use(Row).use(Col);
 
 // import md5 from "blueimp-md5";
-import { apiLoginByUsername } from "@/api/login";
+import { login } from "@/api/login";
 import axios from "axios";
 import Cookies from 'js-cookie';
 export default {

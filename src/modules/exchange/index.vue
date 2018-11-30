@@ -1,10 +1,7 @@
 <template>
   <div class="exchange_main">
-    <!-- 优惠券单元格 -->
-    <van-coupon-cell :coupons="coupons" :chosen-coupon="chosenCoupon" @click="showList = true" />
-    <van-popup v-model="showList" position="bottom">
-      <van-coupon-list :coupons="coupons" :chosen-coupon="chosenCoupon" :disabled-coupons="disabledCoupons" @change="onChange" @exchange="onExchange" />
-    </van-popup>
+    <h3>请输入兑换码</h3>
+    <div class="van-cell van-cell--borderless van-field van-coupon-list__field"><!----><!----><div class="van-cell__value van-cell__value--alone"><div class="van-field__body"><input type="text" placeholder="请输入优惠码" maxlength="20" class="van-field__control"><!----><!----><div class="van-field__button"><button disabled="disabled" class="van-button van-button--danger van-button--small van-button--disabled van-button--unclickable van-coupon-list__exchange"><span class="van-button__text">兑换</span></button></div></div><!----></div><!----></div>
   </div>
 </template>
 <script>

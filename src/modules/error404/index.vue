@@ -9,7 +9,7 @@
   <!--404页面 end-->
 </template>
 
-<script type="text/ecmascript-6">
+<script>
     export default {
         name: "error404",
         data() {

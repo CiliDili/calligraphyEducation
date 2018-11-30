@@ -1,7 +1,7 @@
 import request from "@common/request/axios";
-export function login(params) {
+export function forgetCode(params) {
   return request({
-    url: "/Users/login",
+    url: "/Users/retrieve_pwd",
     method: "post",
     data: params
   });
