@@ -22,6 +22,7 @@ const coupon = {
 };
 
 export default {
+  name: "exchange",
   data() {
     return {
       chosenCoupon: -1,

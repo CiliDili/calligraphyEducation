@@ -1,6 +1,7 @@
 <template>
   <div class="register_main">
     <h3>注册</h3>
+    <form :model="registerForm" :rules="registerRules" ref="registerForm" action="" class="register_form">
     <van-cell-group>
       <!--  <van-field
         placeholder="名称/姓名"
@@ -16,7 +17,7 @@
       <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" />
     </van-cell-group>
     <div class="pad-all mar-top">
-      <van-button type="danger" size="large" class="register-btn" @click="submit">
+      <van-button type="danger" size="large" class="register-btn" @click="submitRegister">
         注册
       </van-button>
       <!-- <van-button
@@ -26,6 +27,7 @@
         重置
       </van-button> -->
     </div>
+  </form>
   </div>
 </template>
 </template>
@@ -55,20 +57,20 @@ export default {
         code: '',
       },
       rules: {
-        name: [
-          { required: true, message: '请输入名称' },
-          {
-            validator: (rule, value, callback) => {
-              if (!value) {
-                callback('请输入正确的用户信息');
-              } else if (/^[1][0-9]{10}$/.test(value)) {
-                callback();
-              } else {
-                callback('请输入正确的用户信息--chaibiying');
-              }
-            }
-          }
-        ],
+        // name: [
+        //   { required: true, message: '请输入名称' },
+        //   {
+        //     validator: (rule, value, callback) => {
+        //       if (!value) {
+        //         callback('请输入正确的用户信息');
+        //       } else if (/^[1][0-9]{10}$/.test(value)) {
+        //         callback();
+        //       } else {
+        //         callback('请输入正确的用户信息--chaibiying');
+        //       }
+        //     }
+        //   }
+        // ],
         mobile: [{
           validator: (rule, value, callback) => {
             if (!value) {
@@ -138,32 +140,38 @@ export default {
         callback && callback(errors, fields)
       }, data);
     },
-    submit() {
-      this.validate((errors, fields) => {
-        // if(fields){
-        //   var params = {
-        //     reg_from : "6",
-        //     phone:this.data.mobile,
-        //     password:md5(this.data.password),
-        //     devide_id:"000",
-        //     client_sys:"",
-        //     version:"1.0.0"
-        //   };
-        //   register(params).then(response =>{
-        //     if(response.data.code == 0){
-        //         console.log("test")
-        //     }else{
-        //         this.$mewssage({
-        //           type:"error",
-        //           message:response.data.message
-        //         });
-        //     }
-        //   });
-        // }else{
-        //   console.log("error submit!!!");
-        //   return false;
-        // };
-      })
+    submitRegister() {
+      this.$refs[formName].validate(valid =>{
+        console.log(valid)
+        if(valid){
+          var params = {
+            user_type: "1",
+            reg_from: "6",
+            phone: this.loginForm.phone,
+            passwd: md5(this.loginForm.password),
+            device_id: "000",
+            client_sys: "",
+            version: "2.3.0"
+          };
+          register(params).then(response =>{
+             if(response.data.code == 0) {
+            // Cookies.set('user_id', response.data.data.id, { expires: 1 });
+            // Cookies.set('commonToken', response.data.data.token, { expires: 1 });
+              this.$router.push({ name: 'exchange' })
+            }else {
+              this.$message({
+              type: 'error',
+              message: response.data.message
+            });
+            }
+          });
+        }
+        else {
+          console.log("error submit!!");
+          return false;
+        }
+
+      });
     },
     reset() {
       this.data = {

@@ -2,15 +2,17 @@
   <div class="login_main">
     <!-- 登录 -->
     <h3>登录</h3>
+    <form :model="loginForm" :rules="loginRules" ref="loginForm" action="" class="login_form">
     <van-cell-group>
-      <van-field v-model="phone" placeholder="手机号" error-message="手机号格式错误" />
-      <van-field v-model="password" type="password" placeholder="密码" required />
+      <van-field v-model="loginForm.phone" placeholder="手机号" class="phone" error-message="手机号格式错误" />
+      <van-field v-model="loginForm.password" type="password" class="password" placeholder="密码" required />
     </van-cell-group>
-    <van-button type="danger" size="large">登录</van-button>
+    <van-button type="danger" size="large" @click="submit('loginForm',loginForm)">登录</van-button>
+  </form>
     <!-- 忘记密码 注册 -->
     <van-row class="register">
-      <van-col span="12" @click="forgetCode">忘记密码 </van-col>
-      <van-col span="12" @click="toRegister">注册新用户</van-col>
+      <van-col span="12"><span @click="forgetCode">忘记密码</span> </van-col>
+      <van-col span="12"><span @click="toRegister">注册新用户</span></van-col>
     </van-row>
     <!-- 第三方登录 -->
     <van-row type="flex" justify="center" class="otherwise">
@@ -18,8 +20,8 @@
     </van-row>
     <van-row type="flex" justify="center" class="three_method">
       <van-col span="6"><img src="../../assets/img/wechat.png"></van-col>
-      <van-col span="6"><img src="../../assets/img/qq.png"></van-col>
-      <van-col span="6"><img src="../../assets/img/weibo.png"></van-col>
+        <van-col span="6"><img src="../../assets/img/qq.png"></van-col>
+          <van-col span="6"><img src="../../assets/img/weibo.png"></van-col>
     </van-row>
   </div>
 </template>
@@ -34,16 +36,83 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 export default {
   name: "login",
-  toRegister(){
-      this.$router.push({
-        name:"register"
-      })
+  data() {
+    var validatePhone = (rule,value,callback) =>{
+      if(value === ''){
+        callback(new Error("请输入手机号"));
+      }else {
+        callback();
+      }
+    };
+    var validatePassword = (rule,value,callback) =>{
+      if(value === ''){
+        callback(new Error("请输入密码"));
+      }else{
+        callback();
+      }
+    };
+    return {
+     loginRules:{
+      phone:[{validator : validatePhone,trigger:"blur"}],
+      password:[{validator : validatePassword,trigger:"blur"}]
+     },
+     loginForm:{
+      phone:"",
+      password:""
+     },
+    };
   },
-  forgetCode(){
-    this.$router.push({
-      name:"forgetCode"
-    })
-  }
+  methods: {
+    submit(formName){
+      this.$refs[formName].validate(valid =>{
+        console.log(valid)
+        if(valid){
+          var params = {
+            user_type: "1",
+            reg_from: "6",
+            phone: this.loginForm.phone,
+            passwd: md5(this.loginForm.password),
+            device_id: "000",
+            client_sys: "",
+            version: "2.3.0"
+          };
+          login(params).then(response =>{
+             if(response.data.code == 0) {
+            // Cookies.set('user_id', response.data.data.id, { expires: 1 });
+            // Cookies.set('commonToken', response.data.data.token, { expires: 1 });
+              this.$router.push({ name: 'exchange' })
+            }else {
+              this.$message({
+              type: 'error',
+              message: response.data.message
+            });
+            }
+          });
+        }
+        else {
+          console.log("error submit!!");
+          return false;
+        }
+
+      });
+    },
+    toRegister() {
+      this.$router.push({
+        name: "register"
+      });
+    },
+    forgetCode() {
+      this.$router.push({
+        name: "forgetCode"
+      })
+    },
+    // exchange() {
+    //   this.$router.push({
+    //     name: "exchange"
+    //   })
+    // },
+  },
+
 }
 
 </script>
