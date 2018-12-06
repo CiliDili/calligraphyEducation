@@ -1,33 +1,33 @@
 <template>
   <div class="register_main">
     <h3>注册</h3>
-    <form :model="registerForm" :rules="registerRules" ref="registerForm" action="" class="register_form">
-    <van-cell-group>
-      <!--  <van-field
+    <form :model="registerForm" :rules="rules" ref="registerForm" action="" class="register_form">
+      <van-cell-group>
+        <!--  <van-field
         placeholder="名称/姓名"
         v-model="data.name"
         :error-message="errorMsg.name"
       ></van-field> -->
-      <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear"></van-field>
-      <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''">
-        <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger">
-          {{ countdown ? countdown + 's' : '发送验证码'}}
+        <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear"></van-field>
+        <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''">
+          <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger">
+            {{ countdown ? countdown + 's' : '发送验证码'}}
+          </van-button>
+        </van-field>
+        <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" />
+      </van-cell-group>
+      <div class="pad-all mar-top">
+        <van-button type="danger" size="large" class="register-btn" @click="submitRegister('registerForm',registerForm)">
+          注册
         </van-button>
-      </van-field>
-      <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" />
-    </van-cell-group>
-    <div class="pad-all mar-top">
-      <van-button type="danger" size="large" class="register-btn" @click="submitRegister">
-        注册
-      </van-button>
-      <!-- <van-button
+        <!-- <van-button   
         block
         class="mar-top"
         @click="reset">
         重置
       </van-button> -->
-    </div>
-  </form>
+      </div>
+    </form>
   </div>
 </template>
 </template>
@@ -35,12 +35,12 @@
 import { Field, Cell, CellGroup, Button, Icon, Row, Col } from 'vant';
 import Vue from 'vue';
 import md5 from "blueimp-md5";
-import { register } from "@/api/register"
+import { register } from "@/api/register";
 Vue.use(Field).use(Cell).use(CellGroup).use(Button).use(Icon).use(Row).use(Col);
 // import axios from "axios";
 // import Cookies from "js-cookie";
-
 import validator from '@common/utils/validator'
+
 export default {
   name: 'register',
   data() {
@@ -71,6 +71,20 @@ export default {
         //     }
         //   }
         // ],
+        password: [
+          { required: true, message: '请输入密码' },
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback('请输入密码');
+              } else if (/^[a-zA-Z0-9]{6,18}$/.test(value)) {
+                callback();
+              } else {
+                callback('请输入正确的6-18位密码');
+              }
+            }
+          }
+        ],
         mobile: [{
           validator: (rule, value, callback) => {
             if (!value) {
@@ -84,7 +98,12 @@ export default {
         }],
         code: [
           { required: true, message: '请输入验证码' }
-        ]
+        ],
+      },
+      registerForm: {
+        mobile: "",
+        password: "",
+        code: "",
       },
     }
   },
@@ -124,11 +143,7 @@ export default {
         this.errorMsg[attr] = ''
       })
     },
-    /**
-     * 验证方法
-     * @param callback
-     * @param data
-     */
+    //验证
     validate(callback, data) {
       this.validator.validate((errors, fields) => {
         this.resetField();
@@ -140,47 +155,37 @@ export default {
         callback && callback(errors, fields)
       }, data);
     },
-    submitRegister() {
-      this.$refs[formName].validate(valid =>{
+    submitRegister(formName) {
+      this.$refs[formName].validate(valid => {
         console.log(valid)
-        if(valid){
+        if (valid) {
           var params = {
             user_type: "1",
             reg_from: "6",
-            phone: this.loginForm.phone,
-            passwd: md5(this.loginForm.password),
+            phone: this.registerForm.phone,
+            passwd: md5(this.registerForm.password),
             device_id: "000",
             client_sys: "",
             version: "2.3.0"
           };
-          register(params).then(response =>{
-             if(response.data.code == 0) {
-            // Cookies.set('user_id', response.data.data.id, { expires: 1 });
-            // Cookies.set('commonToken', response.data.data.token, { expires: 1 });
-              this.$router.push({ name: 'exchange' })
-            }else {
+          register(params).then(response => {
+            if (response.data.code == 0) {
+              // Cookies.set('user_id', response.data.data.id, { expires: 1 });
+              // Cookies.set('commonToken', response.data.data.token, { expires: 1 });
+              this.$router.push({ name: 'login' })
+            } else {
               this.$message({
-              type: 'error',
-              message: response.data.message
-            });
+                type: 'error',
+                message: response.data.message
+              });
             }
           });
-        }
-        else {
+        } else {
           console.log("error submit!!");
           return false;
         }
 
       });
-    },
-    reset() {
-      this.data = {
-        name: '',
-        code: '',
-        mobile: '',
-      };
-      this.validator.setData(this.data);
-      this.resetField();
     },
   },
   created() {
@@ -188,19 +193,25 @@ export default {
   },
 }
 
-</script>
+
 </script>
 <style>
+h3 {
+  margin: 30px 0; 
+}
 .register_main {
   font-family: PingFangSC-Regular;
 }
-.register-btn{
-  width:90%;
+
+.register-btn {
+  width: 90%;
   background: #b4272d;
   opacity: 0.3;
-  color:#fff;
+  color: #fff;
 }
-.van-button--danger{
+
+.register-btn {
   background: #b4272d
 }
+
 </style>

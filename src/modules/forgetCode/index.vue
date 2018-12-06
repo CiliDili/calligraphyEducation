@@ -1,19 +1,178 @@
 <template>
-  <div>
-  <h3>输入手机号</h3>
-    <van-cell-group>
-      <van-field v-model="phone" placeholder="手机号" error-message="手机号格式错误" />
-     
-    </van-cell-group>
-    <van-button type="danger" size="large">找回密码</van-button>
-</div>
+  <div class="forget_main">
+    <h3>找回密码</h3>
+     <form :model="forgetCodeForm" :rules="rules" ref="codeForm" action="" class="code_form">
+      <van-cell-group class="form_item">
+        <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear" class="phone"></van-field>
+        <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''" class="code">
+          <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger" class="send_code">
+            {{ countdown ? countdown + 's' : '发送验证码'}}
+          </van-button>
+        </van-field>
+        <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" class="password"/>
+      </van-cell-group>
+      <van-button type="danger" size="large" class="forget-btn" @click="submitNewCode('codeForm',codeForm)">找回密码</van-button>
+    </form>
+    
+  </div>
 </template>
 <script>
+import { Field, Cell, CellGroup, Button, Icon, Row, Col } from 'vant';
+import Vue from 'vue';
+import md5 from "blueimp-md5";
+import { forgetCode } from "@/api/forgetCode";
+Vue.use(Field).use(Cell).use(CellGroup).use(Button).use(Icon).use(Row).use(Col);
+import validator from '@common/utils/validator'
+
 export default {
-  name: "forgetCode"
-};
+  name: 'forgetCode',
+  data() {
+    return {
+      countdown: 0,
+      data: {
+        name: '',
+        mobile: '',
+        code: '',
+      },
+      errorMsg: {
+        name: '',
+        mobile: '',
+        code: '',
+      },
+      rules: {
+        password: [
+          { required: true, message: '请输入密码' },
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback('请输入密码');
+              } else if (/^[a-zA-Z0-9]{6,18}$/.test(value)) {
+                callback();
+              } else {
+                callback('请输入正确的6-18位密码');
+              }
+            }
+          }
+        ],
+        mobile: [{
+          validator: (rule, value, callback) => {
+            if (!value) {
+              callback('请输入手机号码');
+            } else if (/^[1][0-9]{10}$/.test(value)) {
+              callback();
+            } else {
+              callback('请输入正确的手机号码');
+            }
+          }
+        }],
+        code: [
+          { required: true, message: '请输入验证码' }
+        ],
+      },
+      forgetCodeForm: {
+        mobile: "",
+        password: "",
+        code: "",
+      },
+    }
+  },
+  methods: {
+    sendMobileCode() {
+      this.validate(errors => {
+        if (!errors) {
+          // Toast('发送成功');
+          this.countdown = 60;
+          this.countdownSubtract();
+        }
+      }, 'mobile')
+    },
+    countdownSubtract() {
+      if (this.countdown > 0) {
+        setTimeout(() => {
+          this.countdown -= 1;
+          this.countdownSubtract()
+        }, 1000)
+      }
+    },
+    resetField(attrs) {
+      attrs = !attrs ? Object.keys(this.errorMsg) : (Array.isArray(attrs) ? attrs : [attrs]);
+      attrs.forEach(attr => {
+        this.errorMsg[attr] = ''
+      })
+    },
+    //验证
+    validate(callback, data) {
+      this.validator.validate((errors, fields) => {
+        this.resetField();
+        if (errors) {
+          fields.forEach(item => {
+            this.errorMsg[item.field] = item.message
+          })
+        }
+        callback && callback(errors, fields)
+      }, data);
+    },
+    submitNewCode(formName) {
+      this.$refs[formName].validate(valid => {
+        console.log(valid)
+        if (valid) {
+          var params = {
+            user_type: "1",
+            reg_from: "6",
+            phone: this.loginForm.phone,
+            passwd: md5(this.loginForm.password),
+            device_id: "000",
+            client_sys: "",
+            version: "2.3.0"
+          };
+          forgetCode(params).then(response => {
+            if (response.data.code == 0) {
+              this.$router.push({ name: 'login' })
+            } else {
+              this.$message({
+                type: 'error',
+                message: response.data.message
+              });
+            }
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+
+      });
+    },
+  },
+  created() {
+    this.validator = validator(this.rules, this.data);
+  },
+}
+
 
 </script>
 <style>
-
+h3 {
+  margin: 30px 0; 
+}
+.forget-btn {
+  width: 90%;
+  background: #b4272d;
+  margin-top: 25px;
+  border-radius: 4px;
+}
+.form_item{
+  margin-bottom: 48px;
+}
+.password{
+  line-height: 48px;
+}
+.send_code{
+  background: #b4272d
+}
+.code{
+  line-height: 48px;
+}
+.testCode{
+  background: #b4272d;
+}
 </style>

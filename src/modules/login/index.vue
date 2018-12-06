@@ -3,12 +3,12 @@
     <!-- 登录 -->
     <h3>登录</h3>
     <form :model="loginForm" :rules="loginRules" ref="loginForm" action="" class="login_form">
-    <van-cell-group>
-      <van-field v-model="loginForm.phone" placeholder="手机号" class="phone" error-message="手机号格式错误" />
-      <van-field v-model="loginForm.password" type="password" class="password" placeholder="密码" required />
-    </van-cell-group>
-    <van-button type="danger" size="large" @click="submit('loginForm',loginForm)">登录</van-button>
-  </form>
+      <van-cell-group class="form_item">
+        <van-field v-model="loginForm.phone" placeholder="请输入手机号/用户名" class="phone" />
+        <van-field v-model="loginForm.password" type="password" class="password" placeholder="密码"/>
+      </van-cell-group>
+      <van-button type="danger" size="large" @click="submitForm('loginForm',loginForm)" class="login-btn">登录</van-button>
+    </form>
     <!-- 忘记密码 注册 -->
     <van-row class="register">
       <van-col span="12"><span @click="forgetCode">忘记密码</span> </van-col>
@@ -30,43 +30,48 @@ import { Field, Cell, CellGroup, Button, Icon, Row, Col } from 'vant';
 import Vue from 'vue';
 Vue.use(Field).use(Cell).use(CellGroup).use(Button).use(Icon).use(Row).use(Col);
 
-// import md5 from "blueimp-md5";
+import md5 from "blueimp-md5";
 import { login } from "@/api/login";
 import axios from "axios";
 import Cookies from 'js-cookie';
+
 export default {
   name: "login",
   data() {
-    var validatePhone = (rule,value,callback) =>{
-      if(value === ''){
-        callback(new Error("请输入手机号"));
-      }else {
-        callback();
-      }
-    };
-    var validatePassword = (rule,value,callback) =>{
-      if(value === ''){
+    // var validatephone = (rule, value, callback) => {
+    //   if (value === "") {
+    //     callback(new Error("请输入手机号"));
+    //   } else if (/^[1][0-9]{10}$/.test(value)) {
+    //     callback();
+    //   } else {
+    //     callback('请输入正确的手机号码');
+    //   }
+    // };
+    var validatePassword = (rule, value, callback) => {
+      if (value === "") {
         callback(new Error("请输入密码"));
-      }else{
+      } else if (/^[a-zA-Z0-9]{6,18}$/.test(value)) {
+        callback('请输入正确的6-18位密码');
+      } else {
         callback();
       }
     };
     return {
-     loginRules:{
-      phone:[{validator : validatePhone,trigger:"blur"}],
-      password:[{validator : validatePassword,trigger:"blur"}]
-     },
-     loginForm:{
-      phone:"",
-      password:""
-     },
+      loginRules: {
+        phone: [{ validator: validatephone, trigger: "blur" }],
+        password: [{ validator: validatePassword, trigger: "blur" }]
+      },
+      loginForm: {
+        phone: "",
+        password: ""
+      },
+      dialogVisible: false
     };
   },
   methods: {
-    submit(formName){
-      this.$refs[formName].validate(valid =>{
-        console.log(valid)
-        if(valid){
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
           var params = {
             user_type: "1",
             reg_from: "6",
@@ -74,26 +79,24 @@ export default {
             passwd: md5(this.loginForm.password),
             device_id: "000",
             client_sys: "",
-            version: "2.3.0"
+            version: "1.0.0"
           };
-          login(params).then(response =>{
-             if(response.data.code == 0) {
-            // Cookies.set('user_id', response.data.data.id, { expires: 1 });
-            // Cookies.set('commonToken', response.data.data.token, { expires: 1 });
-              this.$router.push({ name: 'exchange' })
-            }else {
+          login(params).then(response => {
+            if (response.data.code == 0) {
+              // Cookies.set('user_id', response.data.data.id, { expires: 1 });
+              // Cookies.set('commonToken', response.data.data.token, { expires: 1 });
+              this.$router.push({ name: 'mybook' })
+            } else {
               this.$message({
-              type: 'error',
-              message: response.data.message
-            });
+                type: 'error',
+                message: response.data.message
+              });
             }
           });
-        }
-        else {
+        } else {
           console.log("error submit!!");
           return false;
         }
-
       });
     },
     toRegister() {
@@ -106,14 +109,13 @@ export default {
         name: "forgetCode"
       })
     },
-    // exchange() {
-    //   this.$router.push({
-    //     name: "exchange"
-    //   })
-    // },
-  },
-
-}
+    exchange() {
+      this.$router.push({
+        name: "exchange"
+      })
+    },
+  }
+};
 
 </script>
 <style>
@@ -126,9 +128,12 @@ export default {
 }
 
 h3 {
-  margin-top: 10px;
+      margin: 30px 0;
+ 
 }
-
+.form_item{
+  margin-bottom: 50px;
+}
 .van-cell {
   display: flex;
   padding: 10px 15px;
@@ -140,13 +145,18 @@ h3 {
   font-size: 14px;
 }
 
-.van-button--large {
+.login-btn {
   width: 90%;
   opacity: 0.3;
 
   border-radius: 4px;
 }
-
+.phone{
+  line-height: 48px;
+}
+.password{
+  line-height: 48px;
+}
 .register {
   margin-top: 25px;
 
