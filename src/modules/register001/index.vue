@@ -55,11 +55,8 @@
   import validator from '@common/utils/validator'
   export default {
     name: 'register001',
-    // components: {
-    //   [Field.name]: Field,
-    //   [Button.name]: Button,
-    //   [Cell.name]: Cell,
-    // },
+    components: {
+    },
     data() {
       return {
         countdown: 0,
@@ -75,18 +72,7 @@
         },
         rules: {
           name: [
-            {required: true, message: '请输入名称'},
-            {
-              validator: (rule, value, callback) => {
-                if (!value) {
-                  callback('请输入正确的用户信息');
-                } else if (/^[1][0-9]{10}$/.test(value)) {
-                  callback();
-                } else {
-                  callback('请输入正确的用户信息--yb');
-                }
-              }
-            }
+            {required: true, message: '请输入名称'}
           ],
           mobile: [
             {
@@ -111,19 +97,11 @@
       sendMobileCode() {
         this.validate(errors => {
           if (!errors) {
-            // Toast('发送成功');
+            Toast('发送成功');
             this.countdown = 60;
             this.countdownSubtract();
           }
         }, 'mobile')
-        // this.validate(errors => {
-        //   if (!errors) {
-        //     // Toast('yb');
-        //     this.countdown = 60;
-        //     this.countdownSubtract();
-        //   }
-        // }, 'name')
-
       },
       countdownSubtract() {
         if (this.countdown > 0) {
@@ -138,7 +116,7 @@
        * @param attrs
        */
       resetField(attrs) {
-        attrs = !attrs ? Object.keys(this.errorMsg) : (Array.isArray(attrs) ? attrs : [attrs]);
+        attrs = !attrs ? Object.keys(this.errorMsg) : ( Array.isArray(attrs) ? attrs : [attrs]);
         attrs.forEach(attr => {
           this.errorMsg[attr] = ''
         })
@@ -161,7 +139,10 @@
       },
       submit() {
         this.validate((errors, fields) => {
-
+          debugger;
+          console.log(errors);
+          console.log(fields);
+          alert(1111111111)
         })
       },
       reset() {

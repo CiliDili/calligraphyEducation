@@ -1,67 +1,63 @@
 <template>
   <div class="exchange_main">
     <h3>请输入兑换码</h3>
-    <div class="van-cell van-cell--borderless van-field van-coupon-list__field">
-      <!---->
-      <!---->
-      <div class="van-cell__value van-cell__value--alone">
-        <div class="van-field__body"><input type="text" placeholder="请输入优惠码" maxlength="20" class="van-field__control">
-          <!---->
-          <!---->
-          <div class="van-field__button"><button disabled="disabled" class="van-button van-button--danger van-button--small van-button--disabled van-button--unclickable van-coupon-list__exchange"><span class="van-button__text">兑换</span></button></div>
-        </div>
-        <!---->
-      </div>
-      <!---->
-    </div>
+    <van-cell-group class="exchange-code">
+      <van-field v-model="value" placeholder="兑换码" />
+    </van-cell-group>
+    <van-button type="danger" class='exchange-btn' @click="getInviteCode">立即兑换</van-button>
   </div>
 </template>
 <script>
 import Vue from 'vue';
 import { CouponCell, CouponList } from 'vant';
-import { bindInviteCode } from "@/api/bindInviteCode";
-
-Vue.use(CouponCell).use(CouponList);
-const coupon = {
-  available: 1,
-  discount: 0,
-  denominations: 150,
-  originCondition: 0,
-  reason: '',
-  value: 150,
-  name: '优惠券名称',
-  startAt: 1489104000,
-  endAt: 1514592000
-};
-
+import * as api from "@/api/bindInviteCode";
+//import { bindInviteCode } from "@/api/bindInviteCode";
+ 
 export default {
   name: "exchange",
   data() {
     return {
-      chosenCoupon: -1,
-      coupons: [coupon],
-      disabledCoupons: [coupon],
-      inviteCode:[],
+      // inviteCode: {},
     }
   },
 
   methods: {
-    getInviteCode(){
-      var data={};
-      api.bindInviteCode(data).then(response =>{
-        this.inviteCode=response.data.data;
+    getInviteCode(invite_code) {
+      var data = {
+        invite_code:invite_code,
+      };
+      api.bindInviteCode(data).then(response => {
+        if (response.data.code) {
+          console.log(data)
+          Message({
+            message: response.data.message,
+            type: "error",
+            duration: 5 * 1000
+          });
+        } else {
+          console.log(11)
+        }
+        
       })
     },
-    onChange(index) {
-      this.showList = false;
-      this.chosenCoupon = index;
-    },
-    onExchange(code) {
-      this.coupons.push(coupon);
-    }
   }
 }
 
 </script>
 <style>
+h3 {
+  margin: 30px 0; 
+}
+.exchange-code {
+  line-height: 48px;
+  margin-bottom: 40px;
+}
+
+.exchange-btn {
+  width: 90%;
+  background: #b4272d;
+  border-radius: 4px;
+
+}
+
 </style>
