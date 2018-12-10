@@ -24,7 +24,7 @@
     <van-row type="flex" justify="center" class="three_method">
       <van-col span="6"><img src="../../assets/img/wechat.png"></van-col>
         <van-col span="6"><img src="../../assets/img/qq.png"></van-col>
-          <van-col span="6"><img src="../../assets/img/weibo.png"></van-col>
+          <van-col span="6"><a href="https://api.weibo.com/oauth2/authorize?client_id=1396355807&redirect_uri=http://m.anyew.com/login-weibo_return?borrow=1&callbackurl=aHR0cDovL20uYW55ZXcuY24vbG9naW4td2VpYm9fcmV0dXJu"><img src="../../assets/img/weibo.png"></a></van-col>
     </van-row>
   </div>
 </template>
@@ -101,7 +101,6 @@ export default {
     submitForm(formName) {
       this.validate((errors, fields) => {
           if(errors){
-            debugger;
               var params = {
                 user_type: "1",
                 reg_from: "6",
