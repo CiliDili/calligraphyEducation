@@ -4,38 +4,46 @@
     <van-cell-group class="exchange-code">
       <van-field v-model="value" placeholder="兑换码" />
     </van-cell-group>
-    <van-button type="danger" class='exchange-btn' @click="getInviteCode">立即兑换</van-button>
+   <!--  <van-button type="danger" size="large" class="exchange-btn" @click="getInviteCode">
+       立即兑换
+      </van-button> -->
+    <div class='exchange-btn' @click="getInviteCode">立即兑换</div>
   </div>
 </template>
 <script>
 import Vue from 'vue';
 import { CouponCell, CouponList } from 'vant';
-import * as api from "@/api/bindInviteCode";
+import {bindInviteCode} from "@/api/bindInviteCode";
+import Cookies from 'js-cookie';
+import axios from "axios";
 //import { bindInviteCode } from "@/api/bindInviteCode";
  
 export default {
   name: "exchange",
   data() {
     return {
-      // inviteCode: {},
+      invite_code:'',
     }
   },
 
   methods: {
-    getInviteCode(invite_code) {
+    getInviteCode() {
       var data = {
-        invite_code:invite_code,
-      };
-      api.bindInviteCode(data).then(response => {
-        if (response.data.code) {
-          console.log(data)
-          Message({
-            message: response.data.message,
-            type: "error",
-            duration: 5 * 1000
-          });
+         user_id: Cookies.get('user_id'),
+         invite_code:this.invite_code,
+          reg_from: "6",
+          client_sys: '',
+          version: '2.3.0'
+       };
+      bindInviteCode(data).then(response => {
+        if (response.data.code == 0) {
+          console.log(111)
+          this.$router.push({ name: 'success' })
         } else {
-          console.log(11)
+          console.log(333);
+          this.$dialog.alert({
+            message: '弹窗内容'
+          });
         }
         
       })
@@ -54,10 +62,14 @@ h3 {
 }
 
 .exchange-btn {
-  width: 90%;
+ width: 90%;
   background: #b4272d;
+  margin-top: 25px;
   border-radius: 4px;
-
+  line-height: 48px;
+  color: #fff;
+  height: 48px;
+  margin: 25px auto;
 }
 
 </style>

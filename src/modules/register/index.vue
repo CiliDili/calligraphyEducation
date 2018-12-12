@@ -149,6 +149,7 @@ export default {
       };
       register(params).then(response => {
         if (response.data.code == 0) {
+          console.log(111)
           this.$router.push({ name: 'login' })
         } else {
           console.log(333);
