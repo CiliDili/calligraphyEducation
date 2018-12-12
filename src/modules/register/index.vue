@@ -1,7 +1,6 @@
 <template>
   <div class="register_main">
     <h3>注册</h3>
-    <form :model="registerForm" :rules="rules" ref="registerForm" action="" class="register_form">
       <van-cell-group>
         <!--  <van-field
         placeholder="名称/姓名"
@@ -16,18 +15,7 @@
         </van-field>
         <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" />
       </van-cell-group>
-      <div class="pad-all mar-top">
-        <van-button type="danger" size="large" class="register-btn" @click="submitRegister('registerForm',registerForm)">
-          注册
-        </van-button>
-        <!-- <van-button   
-        block
-        class="mar-top"
-        @click="reset">
-        重置
-      </van-button> -->
-      </div>
-    </form>
+      <div @click="register">注册</div>
   </div>
 </template>
 </template>
@@ -100,7 +88,7 @@ export default {
           { required: true, message: '请输入验证码' }
         ],
       },
-      registerForm: {
+      data: {
         mobile: "",
         password: "",
         code: "",
@@ -155,37 +143,37 @@ export default {
         callback && callback(errors, fields)
       }, data);
     },
-    submitRegister(formName) {
-      this.$refs[formName].validate(valid => {
-        console.log(valid)
-        if (valid) {
-          var params = {
-            user_type: "1",
-            reg_from: "6",
-            phone: this.registerForm.phone,
-            passwd: md5(this.registerForm.password),
-            device_id: "000",
-            client_sys: "",
-            version: "2.3.0"
-          };
-          register(params).then(response => {
-            if (response.data.code == 0) {
-              // Cookies.set('user_id', response.data.data.id, { expires: 1 });
-              // Cookies.set('commonToken', response.data.data.token, { expires: 1 });
-              this.$router.push({ name: 'login' })
-            } else {
-              this.$message({
-                type: 'error',
-                message: response.data.message
-              });
-            }
-          });
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
+   register(formName) {
+    console.log(333)
+      var params = {
+         mobile: this.data.mobile,
+         passwd: md5(this.data.password),
+         device_id: "000",
+         reg_from: "6",
+         client_sys: '',
+         version: '2.3.0'
+       };
+       register(params).then(response => {
+         if (response.data.code == 0) {
+          console.log(params)
+           //this.$router.push({ name: 'login' })
+         } else {
+           console.log(333);
+           this.$dialog.alert({
+             message: '弹窗内容'
+           });
+         }
+       });
+     // this.validate((errors, fields) => {
+          
+     //      console.log(errors);
+     //      console.log(fields);
+     //      alert(1111111111)
+     //    })
+        
+      
 
-      });
+    
     },
   },
   created() {
