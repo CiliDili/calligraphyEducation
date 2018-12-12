@@ -10,7 +10,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/404'
+      redirect: '/login'
     },
     {
       path: '/404',

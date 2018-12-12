@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script>
+  var params = {
+    user_type: "1",
+    phone: 111111111111,
+    passwd: 22222222,
+    device_id: "000",
+    reg_from: "6",
+    client_sys: "",
+    version: "1.0.0"
+  };
+  $.post("http://commdev-tw.fangzhengshufa.com/index.php/Users/login",params,function(result){
+    alert(11111111111)
+  });
+</script>
