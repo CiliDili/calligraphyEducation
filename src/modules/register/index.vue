@@ -1,21 +1,21 @@
 <template>
   <div class="register_main">
     <h3>注册</h3>
-      <van-cell-group>
-        <!--  <van-field
+    <van-cell-group>
+      <!--  <van-field
         placeholder="名称/姓名"
         v-model="data.name"
         :error-message="errorMsg.name"
       ></van-field> -->
-        <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear"></van-field>
-        <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''">
-          <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger">
-            {{ countdown ? countdown + 's' : '发送验证码'}}
-          </van-button>
-        </van-field>
-        <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" />
-      </van-cell-group>
-      <div @click="register">注册</div>
+      <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear"></van-field>
+      <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''">
+        <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger">
+          {{ countdown ? countdown + 's' : '发送验证码'}}
+        </van-button>
+      </van-field>
+      <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" />
+    </van-cell-group>
+    <div class="register-btn" @click="register">注册</div>
   </div>
 </template>
 </template>
@@ -34,11 +34,6 @@ export default {
   data() {
     return {
       countdown: 0,
-      data: {
-        name: '',
-        mobile: '',
-        code: '',
-      },
       errorMsg: {
         name: '',
         mobile: '',
@@ -143,37 +138,35 @@ export default {
         callback && callback(errors, fields)
       }, data);
     },
-   register(formName) {
-    console.log(333)
+    register(formName) {
       var params = {
-         mobile: this.data.mobile,
-         passwd: md5(this.data.password),
-         device_id: "000",
-         reg_from: "6",
-         client_sys: '',
-         version: '2.3.0'
-       };
-       register(params).then(response => {
-         if (response.data.code == 0) {
-          console.log(params)
-           //this.$router.push({ name: 'login' })
-         } else {
-           console.log(333);
-           this.$dialog.alert({
-             message: '弹窗内容'
-           });
-         }
-       });
-     // this.validate((errors, fields) => {
-          
-     //      console.log(errors);
-     //      console.log(fields);
-     //      alert(1111111111)
-     //    })
-        
-      
+        mobile: this.data.mobile,
+        passwd: md5(this.data.password),
+        device_id: "000",
+        reg_from: "6",
+        client_sys: '',
+        version: '2.3.0'
+      };
+      register(params).then(response => {
+        if (response.data.code == 0) {
+          this.$router.push({ name: 'login' })
+        } else {
+          console.log(333);
+          this.$dialog.alert({
+            message: '弹窗内容'
+          });
+        }
+      });
+      // this.validate((errors, fields) => {
 
-    
+      //      console.log(errors);
+      //      console.log(fields);
+      //      alert(1111111111)
+      //    })
+
+
+
+
     },
   },
   created() {
@@ -181,12 +174,12 @@ export default {
   },
 }
 
-
 </script>
 <style>
 h3 {
-  margin: 30px 0; 
+  margin: 30px 0;
 }
+
 .register_main {
   font-family: PingFangSC-Regular;
 }
@@ -194,8 +187,12 @@ h3 {
 .register-btn {
   width: 90%;
   background: #b4272d;
-  opacity: 0.3;
+  margin-top: 25px;
+  border-radius: 4px;
+  line-height: 48px;
   color: #fff;
+  height: 48px;
+  margin: 25px auto;
 }
 
 .register-btn {

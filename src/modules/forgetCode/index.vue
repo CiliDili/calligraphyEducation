@@ -1,19 +1,17 @@
 <template>
   <div class="forget_main">
     <h3>找回密码</h3>
-     <form :model="forgetCodeForm" :rules="rules" ref="codeForm" action="" class="code_form">
-      <van-cell-group class="form_item">
-        <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear" class="phone"></van-field>
-        <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''" class="code">
-          <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger" class="send_code">
-            {{ countdown ? countdown + 's' : '发送验证码'}}
-          </van-button>
-        </van-field>
-        <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" class="password"/>
-      </van-cell-group>
-      <van-button type="danger" size="large" class="forget-btn" @click="submitNewCode('codeForm',codeForm)">找回密码</van-button>
-    </form>
-    
+    <van-cell-group>
+      <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear" class="phone"></van-field>
+      <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''" class="code">
+        <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger" class="send_code">
+          {{ countdown ? countdown + 's' : '发送验证码'}}
+        </van-button>
+      </van-field>
+      <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" class="password" />
+    </van-cell-group>
+    <!-- <van-button type="danger" size="large" class="forget-btn" @click="submitNewCode('codeForm',codeForm)">找回密码</van-button> -->
+    <div class="forget-btn" @click="forgetCode">找回密码</div>
   </div>
 </template>
 <script>
@@ -29,11 +27,6 @@ export default {
   data() {
     return {
       countdown: 0,
-      data: {
-        name: '',
-        mobile: '',
-        code: '',
-      },
       errorMsg: {
         name: '',
         mobile: '',
@@ -69,7 +62,7 @@ export default {
           { required: true, message: '请输入验证码' }
         ],
       },
-      forgetCodeForm: {
+      data: {
         mobile: "",
         password: "",
         code: "",
@@ -112,34 +105,23 @@ export default {
         callback && callback(errors, fields)
       }, data);
     },
-    submitNewCode(formName) {
-      this.$refs[formName].validate(valid => {
-        console.log(valid)
-        if (valid) {
-          var params = {
-            user_type: "1",
-            reg_from: "6",
-            phone: this.loginForm.phone,
-            passwd: md5(this.loginForm.password),
-            device_id: "000",
-            client_sys: "",
-            version: "2.3.0"
-          };
-          forgetCode(params).then(response => {
-            if (response.data.code == 0) {
-              this.$router.push({ name: 'login' })
-            } else {
-              this.$message({
-                type: 'error',
-                message: response.data.message
-              });
-            }
-          });
+    forgetCode(formName) {
+      var params = {
+        mobile: this.data.mobile,
+        newpasswd: md5(this.data.password),
+        reg_from: "6",
+        client_sys: '',
+        version: '2.3.0'
+      };
+      forgetCode(params).then(response => {
+        if (response.data.code == 0) {
+          this.$router.push({ name: 'login' })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log(333);
+          this.$dialog.alert({
+            message: '弹窗内容'
+          });
         }
-
       });
     },
   },
@@ -148,31 +130,41 @@ export default {
   },
 }
 
-
 </script>
 <style>
 h3 {
-  margin: 30px 0; 
+  margin: 30px 0;
 }
+
 .forget-btn {
   width: 90%;
   background: #b4272d;
   margin-top: 25px;
   border-radius: 4px;
+  line-height: 48px;
+  color: #fff;
+  height: 48px;
+  margin: 25px auto;
 }
-.form_item{
+
+.form_item {
   margin-bottom: 48px;
 }
-.password{
+
+.password {
   line-height: 48px;
 }
-.send_code{
+
+.send_code {
   background: #b4272d
 }
-.code{
+
+.code {
   line-height: 48px;
 }
-.testCode{
+
+.testCode {
   background: #b4272d;
 }
+
 </style>
