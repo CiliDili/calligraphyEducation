@@ -20,8 +20,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/index.php': {
-
-        target: 'http://commdev.fangzhengshufa.com',
+        target: 'http://twapi.fangzhengshufa.com',
         // pathRewrite: {'^/portal/file' : ''},
         changeOrigin: true
       }
@@ -30,7 +29,7 @@ module.exports = {
 
     // Various Dev Server settings
     host: '172.19.32.88', // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8081, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
     errorOverlay: true,
     notifyOnErrors: true,

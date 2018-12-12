@@ -10,7 +10,8 @@
         <van-field v-model="loginForm.password" type="password" class="password" placeholder="密码"/>
 
       </van-cell-group>
-      <van-button type="danger" size="large" @click="submitForm('loginForm',loginForm)" class="login-btn">登录</van-button>
+      <!--<van-button type="danger" size="large" @click="submitForm('loginForm',loginForm)" class="login-btn">登录</van-button>-->
+      <div @click="submitForm">确定</div>
     </form>
     <!-- 忘记密码 注册 -->
     <van-row class="register">
@@ -99,27 +100,29 @@ export default {
     //QQ   APP ID：101527480
     //APP Key：aad6c9fc4c4472f08ce7f6f27b9f3264
     submitForm(formName) {
-      var params = {
-        user_type: "1",
-        phone: this.loginForm.phone,
-        passwd: md5(this.loginForm.password),
-        device_id: "000",
-        reg_from: "5",
-        client_sys: '',
-        version: '2.3.0'
-      };
-      login(params).then(response => {
-        if (response.data.code == 0) {
-          debugger;
-          // Cookies.set('user_id', response.data.data.id, { expires: 1 });
-          // Cookies.set('commonToken', response.data.data.token, { expires: 1 });
-          // this.$router.push({ name: 'exchange' })
-        } else {
-          // this.$dialog.alert({
-          //   message: '弹窗内容'
-          // });
-        }
-      });
+      console.log(222);
+      /* var params = {
+         user_type: "1",
+         phone: this.loginForm.phone,
+         passwd: md5(this.loginForm.password),
+         device_id: "000",
+         reg_from: "5",
+         client_sys: '',
+         version: '2.3.0'
+       };
+       login(params).then(response => {
+         if (response.data.code == 0) {
+           // debugger;
+           // Cookies.set('user_id', response.data.data.id, { expires: 1 });
+           // Cookies.set('commonToken', response.data.data.token, { expires: 1 });
+           // this.$router.push({ name: 'exchange' })
+         } else {
+           console.log(1);
+           // this.$dialog.alert({
+           //   message: '弹窗内容'
+           // });
+         }
+       });*/
 
 /*
       this.validate((errors, fields) => {

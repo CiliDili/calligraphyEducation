@@ -3,26 +3,27 @@ import qs from 'qs';
 const BASE_URL = $_$.BASE_URL;
 let typeData = '';
 const _axios = axios.create({
-  baseURL: BASE_URL, // api的base_url
-  transformRequest: [function(data) {
+ baseURL: BASE_URL, // api的base_url
+/*  transformRequest: [function(data) {
     data = qs.stringify(data);
     return data;
-  }],
+  }],*/
   timeout: 5000, // request timeout
   headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
 });
 // request interceptor
 _axios.interceptors.request.use(
   config => {
-    const whiteList = ['/Users/login']; // 白名单
-    if (whiteList.indexOf(config.url) != -1) {
-      return config;
-    }
+    // const whiteList = ['/Users/login']; // 白名单
+    // if (whiteList.indexOf(config.url) != -1) {
+    //   return config;
+    // }
     // 判断请求的类型
     if (config.method === 'get') {
       typeData = 'params';
     }
     if (config.method === 'post') {
+      config.data = qs.stringify(config.data);
       typeData = 'data';
     }
     // config[typeData].user_id = Cookies.get('user_id') ? Cookies.get('user_id') : '';
