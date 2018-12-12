@@ -146,12 +146,12 @@
         })
       },
       reset() {
-        this.data = {
-          name: '',
-          code: '',
-          mobile: '',
-        };
-        this.validator.setData(this.data);
+        // this.data = {
+        //   name: '',
+        //   code: '',
+        //   mobile: '',
+        // };
+        // this.validator.setData(this.data);
         this.resetField();
       },
     },
