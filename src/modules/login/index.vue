@@ -4,12 +4,12 @@
     <h3>登录</h3>
     <div>
       <van-cell-group class="form_item">
-
         <van-field v-model="loginForm.phone"
                    placeholder="请输入手机号/用户名"
                    class="phone"
                    :error-message="errorMsg.phone"
                    @focus="focusValidate('phone')"
+                   @blur="blurValidate"
         />
         <van-field v-model="loginForm.password"
                    type="password"
@@ -17,12 +17,14 @@
                    placeholder="密码"
                    :error-message="errorMsg.password"
                    @focus="focusValidate('password')"
+                   @blur="blurValidate"
         />
       </van-cell-group>
       <van-button type="danger"
                   size="large"
                   @click="submitForm"
-                  class="login-btn">登录</van-button>
+                  :class="dialogVisible ? 'login-btn' : 'login-btn-show'"
+      >登录</van-button>
     </div>
     <!--</form>-->
     <!-- 忘记密码 注册 -->
@@ -85,10 +87,21 @@
           phone: "",
           password: ""
         },
-        dialogVisible: false
+        dialogVisible: true
       };
     },
     methods: {
+      blurValidate() {
+        this.validate((errors, fields) => {
+          console.log(errors);
+          if(!errors){
+            this.dialogVisible = false;
+          }else{
+            this.dialogVisible = true;
+          }
+        })
+      },
+      /*输入框获取焦点后,清空页面错误数据*/
       focusValidate(obj) {
         this.errorMsg[obj] = '';
       },
@@ -201,7 +214,10 @@
   .login-btn {
     width: 90%;
     opacity: 0.3;
-
+    border-radius: 4px;
+  }
+  .login-btn-show {
+    width: 90%;
     border-radius: 4px;
   }
 

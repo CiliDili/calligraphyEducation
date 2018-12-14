@@ -7,13 +7,33 @@
         v-model="data.name"
         :error-message="errorMsg.name"
       ></van-field> -->
-      <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear"></van-field>
-      <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''">
-        <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger">
+      <van-field type="tel"
+                 placeholder="手机号(仅中国大陆)"
+                 v-model="data.mobile"
+                 :error-message="errorMsg.mobile"
+                 @click-icon="data.mobile = ''"
+                 @focus="focusValidate('mobile')"
+                 icon="clear"></van-field>
+      <van-field center v-model="data.code"
+                 placeholder="验证码"
+                 icon="clear"
+                 :error-message="errorMsg.code"
+                 @focus="focusValidate('code')"
+                 @click-icon="data.code = ''">
+        <van-button slot="button"
+                    size="small"
+                    :disabled="countdown > 0"
+                    @click="sendMobileCode"
+                    type="danger">
           {{ countdown ? countdown + 's' : '发送验证码'}}
         </van-button>
       </van-field>
-      <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" />
+      <van-field v-model="data.password"
+                 type="password"
+                 placeholder="设置密码(6-18位)"
+                 :error-message="errorMsg.password"
+                 @focus="focusValidate('password')"
+                 @click-icon="data.password = ''" />
     </van-cell-group>
     <div class="register-btn" @click="register">注册</div>
   </div>
@@ -35,8 +55,8 @@ export default {
     return {
       countdown: 0,
       errorMsg: {
-        name: '',
         mobile: '',
+        password: '',
         code: '',
       },
       rules: {
@@ -91,6 +111,11 @@ export default {
     }
   },
   methods: {
+    /*输入框获取焦点后,清空页面错误数据*/
+    focusValidate(obj) {
+      this.errorMsg[obj] = '';
+    },
+    /*发送验证码*/
     sendMobileCode() {
       this.validate(errors => {
         if (!errors) {
@@ -139,35 +164,23 @@ export default {
       }, data);
     },
     register(formName) {
-      var params = {
-        mobile: this.data.mobile,
-        passwd: md5(this.data.password),
-        device_id: "000",
-        reg_from: "6",
-        client_sys: '',
-        version: '2.3.0'
-      };
-      register(params).then(response => {
-        if (response.data.code == 0) {
-          console.log(111)
-          this.$router.push({ name: 'login' })
-        } else {
-          console.log(333);
-          this.$dialog.alert({
-            message: '弹窗内容'
+      this.validate((errors, fields) => {
+        if(!errors){
+          var params = {
+            mobile: this.data.mobile,
+            passwd: md5(this.data.password),
+
+          };
+          register(params).then(response => {
+            if (response.data.code == 0) {
+              console.log(111)
+              this.$router.push({ name: 'login' })
+            } else {
+
+            }
           });
         }
-      });
-      // this.validate((errors, fields) => {
-
-      //      console.log(errors);
-      //      console.log(fields);
-      //      alert(1111111111)
-      //    })
-
-
-
-
+      })
     },
   },
   created() {
