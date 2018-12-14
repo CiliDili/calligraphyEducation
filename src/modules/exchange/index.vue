@@ -23,6 +23,7 @@ export default {
   data() {
     return {
       invite_code:'',
+      value:'',
     }
   },
 
@@ -30,7 +31,7 @@ export default {
     getInviteCode() {
       var data = {
          user_id: Cookies.get('user_id'),
-         invite_code:this.invite_code,
+         invite_code:this.value,
           reg_from: "6",
           client_sys: '',
           version: '2.3.0'
@@ -41,9 +42,6 @@ export default {
           this.$router.push({ name: 'success' })
         } else {
           console.log(333);
-          this.$dialog.alert({
-            message: '弹窗内容'
-          });
         }
         
       })
