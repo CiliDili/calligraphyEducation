@@ -37,11 +37,21 @@
       <van-col span="12">以其他方式登录</van-col>
     </van-row>
     <van-row type="flex" justify="center" class="three_method">
-      <van-col span="6"><img src="../../assets/img/wechat.png"></van-col>
-      <van-col span="6"><img src="../../assets/img/qq.png"></van-col>
-      <van-col span="6"><a
-        href="https://api.weibo.com/oauth2/authorize?client_id=1396355807&redirect_uri=http://m.anyew.com/login-weibo_return?borrow=1&callbackurl=aHR0cDovL20uYW55ZXcuY24vbG9naW4td2VpYm9fcmV0dXJu"><img
-        src="../../assets/img/weibo.png"></a></van-col>
+      <van-col span="6">
+        <a :href="oauth.qqUrl">
+          <img src="../../assets/img/wechat.png">
+        </a>
+      </van-col>
+      <van-col span="6">
+        <a :href="oauth.wxUrl">
+          <img src="../../assets/img/qq.png">
+        </a>
+      </van-col>
+      <van-col span="6">
+        <a :href="oauth.wbUrl">
+          <img src="../../assets/img/weibo.png">
+        </a>
+      </van-col>
     </van-row>
   </div>
 </template>
@@ -87,7 +97,12 @@
           phone: "",
           password: ""
         },
-        dialogVisible: true
+        dialogVisible: true,
+        oauth: {
+          qqUrl: 'http://commdev.fangzhengshufa.com/index.php/Users/oauth_login?type=qq&redirect_uri=',
+          wxUrl: 'http://commdev.fangzhengshufa.com/index.php/Users/oauth_login?type=weixin&redirect_uri=',
+          wbUrl: 'http://commdev.fangzhengshufa.com/index.php/Users/oauth_login?type=sina&redirect_uri='
+        }
       };
     },
     methods: {
@@ -176,9 +191,16 @@
         this.validator.setData(this.loginForm);
         this.resetField();
       },
+      getUrl() {        
+        let redirect_uri = window.location.href.replace('login', 'exchange');
+        this.oauth.qqUrl += redirect_uri;
+        this.oauth.wxUrl += redirect_uri;
+        this.oauth.wbUrl += redirect_uri;
+      }
     },
     created() {
       this.validator = validator(this.loginRules, this.loginForm);
+      this.getUrl();
     }
   };
 

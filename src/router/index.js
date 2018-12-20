@@ -28,7 +28,7 @@ export default new Router({
       component: _import("register/index")
     },
     {
-      path: "/register001",
+      path: "/register001/index",
       name: "register001",
       component: _import("register001/index")
     },
