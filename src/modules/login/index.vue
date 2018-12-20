@@ -38,12 +38,12 @@
     </van-row>
     <van-row type="flex" justify="center" class="three_method">
       <van-col span="6">
-        <a :href="oauth.qqUrl">
+        <a :href="oauth.wxUrl">
           <img src="../../assets/img/wechat.png">
         </a>
       </van-col>
       <van-col span="6">
-        <a :href="oauth.wxUrl">
+        <a :href="oauth.qqUrl">
           <img src="../../assets/img/qq.png">
         </a>
       </van-col>
