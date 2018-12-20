@@ -1,7 +1,9 @@
 import axios from "axios";
 import qs from 'qs';
+import Cookies from 'js-cookie';
 const BASE_URL = $_$.BASE_URL;
 let typeData = '';
+//let commonToken = Cookies.get('commonToken');
 const _axios = axios.create({
  baseURL: BASE_URL, // api的base_url
   transformRequest: [function(data) {
@@ -27,7 +29,7 @@ _axios.interceptors.request.use(
       typeData = 'data';
     }
     // config[typeData].user_id = Cookies.get('user_id') ? Cookies.get('user_id') : '';
-
+    config[typeData].user_id = Cookies.get('user_id') ? Cookies.get('user_id') : '';
     config[typeData].client_sys = config[typeData].client_sys ? config[typeData].client_sys : $_$.client_sys;
     config[typeData].reg_from = config[typeData].reg_from ? config[typeData].reg_from : $_$.reg_from;
     config[typeData].version = config[typeData].version ? config[typeData].version : $_$.version;

@@ -18,6 +18,7 @@
                    :error-message="errorMsg.password"
                    @focus="focusValidate('password')"
                    @blur="blurValidate"
+                   @keyup="getValue"
         />
       </van-cell-group>
       <van-button type="danger"
@@ -36,12 +37,16 @@
     <van-row type="flex" justify="center" class="otherwise">
       <van-col span="12">以其他方式登录</van-col>
     </van-row>
+    <!-- <div class="thre_method">
+      <a href="http://commdev.fangzhengshufa.com/index.php/Users/oauth_login?type=weixin"><img src="../../assets/img/wechat.png"></a>
+      <a href="http://commdev.fangzhengshufa.com/index.php/Users/oauth_login?type=qq"><img src="../../assets/img/qq.png"></a>
+      <a href="http://commdev.fangzhengshufa.com/index.php/Users/oauth_login?type=sina"><img
+        src="../../assets/img/weibo.png"></a>
+    </div> -->
     <van-row type="flex" justify="center" class="three_method">
-      <van-col span="6"><img src="../../assets/img/wechat.png"></van-col>
-      <van-col span="6"><img src="../../assets/img/qq.png"></van-col>
-      <van-col span="6"><a
-        href="https://api.weibo.com/oauth2/authorize?client_id=1396355807&redirect_uri=http://m.anyew.com/login-weibo_return?borrow=1&callbackurl=aHR0cDovL20uYW55ZXcuY24vbG9naW4td2VpYm9fcmV0dXJu"><img
-        src="../../assets/img/weibo.png"></a></van-col>
+      <van-col span="6"><span @click="loginQQ"><a><img src="../../assets/img/wechat.png"></a></span></van-col>
+      <van-col span="6"><span @click="loginWX"><a><img src="../../assets/img/qq.png"></a></span></van-col>
+      <van-col span="6"><span @click="loginSina"><a><img src="../../assets/img/weibo.png"></a></span></van-col>
     </van-row>
   </div>
 </template>
@@ -80,7 +85,7 @@
           password: [{validator: validatePassword}]
         },
         loginForm: {
-          phone: "13333653512",
+          phone: "",
           password: ""
         },
         errorMsg: {
@@ -101,9 +106,14 @@
           }
         })
       },
+      getValue(){
+         if(this.loginForm.password.length>=1){
+          this.dialogVisible = false;
+        }
+      },
       /*输入框获取焦点后,清空页面错误数据*/
       focusValidate(obj) {
-        this.errorMsg[obj] = '';
+        this.errorMsg[obj] = '';       
       },
       /*验证必备*/
       validate(callback, data) {
@@ -127,8 +137,17 @@
           this.errorMsg[attr] = ''
         })
       },
-      //QQ   APP ID：101527480
-      //APP Key：aad6c9fc4c4472f08ce7f6f27b9f3264
+      loginQQ(){
+        console.log(12111)
+        var params={};
+        loginQQ(params).then(response =>{
+          if(response.data.code == 0){
+              console.log(2322)
+          }else{
+
+          }
+        });
+      },
       submitForm() {
         this.validate((errors, fields) => {
          if(!errors){
@@ -140,6 +159,7 @@
              if(response.data.code == 0) {
                Cookies.set('user_id', response.data.data.id, { expires: 1 });
                Cookies.set('commonToken', response.data.data.token, { expires: 1 });
+               Cookies.set('to_user_id', response.data.data.id, { expires: 1 });
                this.$router.push({ name: 'exchange' })
              }else{
                Toast.fail({
@@ -212,13 +232,15 @@
   }
 
   .login-btn {
-    width: 90%;
+    width: 90%!important;
     opacity: 0.3;
     border-radius: 4px;
+
   }
   .login-btn-show {
     width: 90%;
     border-radius: 4px;
+     background: #b4272d;
   }
 
   .phone {
@@ -235,7 +257,10 @@
     font-size: 14px;
     color: #999999;
   }
-
+  .register div{
+    height: 50px;
+    line-height: 44px;
+  }
   .otherwise {
     margin-top: 150px;
     font-size: 12px;
@@ -245,5 +270,10 @@
   .three_method {
     margin-top: 50px;
   }
-
+  /*.three_method a {
+    display: inline-block;
+  }*/
+ /* .three_method a img{
+    width: 100%;
+  }*/
 </style>

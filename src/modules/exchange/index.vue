@@ -30,18 +30,20 @@ export default {
   methods: {
     getInviteCode() {
       var data = {
-         user_id: Cookies.get('user_id'),
+         to_user_id: Cookies.get('to_user_id'),
          invite_code:this.value,
           reg_from: "6",
           client_sys: '',
           version: '2.3.0'
        };
+       console.log(data.to_user_id)
+      // axios.defaults.headers['token'] = Cookies.get('commonToken');
       bindInviteCode(data).then(response => {
         if (response.data.code == 0) {
-          console.log(111)
+          console.log(this.invite_code)
           this.$router.push({ name: 'success' })
         } else {
-          console.log(333);
+          console.log("不成功");
         }
         
       })
