@@ -38,12 +38,12 @@
     </van-row>
     <van-row type="flex" justify="center" class="three_method">
       <van-col span="6">
-        <a :href="oauth.qqUrl">
+        <a :href="oauth.wxUrl">
           <img src="../../assets/img/wechat.png">
         </a>
       </van-col>
       <van-col span="6">
-        <a :href="oauth.wxUrl">
+        <a :href="oauth.qqUrl">
           <img src="../../assets/img/qq.png">
         </a>
       </van-col>
@@ -90,8 +90,8 @@
           password: [{validator: validatePassword}]
         },
         loginForm: {
-          phone: "13333653512",
-          password: ""
+          phone: "18801295246",
+          password: ""//qaz123
         },
         errorMsg: {
           phone: "",
@@ -99,9 +99,9 @@
         },
         dialogVisible: true,
         oauth: {
-          qqUrl: 'http://commdev.fangzhengshufa.com/index.php/Users/oauth_login?type=qq&redirect_uri=',
-          wxUrl: 'http://commdev.fangzhengshufa.com/index.php/Users/oauth_login?type=weixin&redirect_uri=',
-          wbUrl: 'http://commdev.fangzhengshufa.com/index.php/Users/oauth_login?type=sina&redirect_uri='
+          qqUrl: '/Users/oauth_login?type=qq',
+          wxUrl: '/Users/oauth_login?type=weixin',
+          wbUrl: '/Users/oauth_login?type=sina'
         }
       };
     },
@@ -142,18 +142,19 @@
           this.errorMsg[attr] = ''
         })
       },
-      //QQ   APP ID：101527480
-      //APP Key：aad6c9fc4c4472f08ce7f6f27b9f3264
       submitForm() {
         this.validate((errors, fields) => {
          if(!errors){
            var params = {
+             user_type: "1",
+             device_id: "000",
              phone: this.loginForm.phone,
              passwd: md5(this.loginForm.password),
            };
            login(params).then(response => {
              if(response.data.code == 0) {
                Cookies.set('user_id', response.data.data.id, { expires: 1 });
+               //Cookies.set('to_user_id', response.data.data.id, { expires: 1 });
                Cookies.set('commonToken', response.data.data.token, { expires: 1 });
                this.$router.push({ name: 'exchange' })
              }else{
@@ -191,11 +192,14 @@
         this.validator.setData(this.loginForm);
         this.resetField();
       },
-      getUrl() {        
-        let redirect_uri = window.location.href.replace('login', 'exchange');
-        this.oauth.qqUrl += redirect_uri;
-        this.oauth.wxUrl += redirect_uri;
-        this.oauth.wbUrl += redirect_uri;
+      getUrl() {
+        const BASE_URL = $_$.BASE_URL;    
+        // let redirect_uri = window.location.href.replace('login', 'exchange');
+        let redirect_uri = BASE_URL.replace('index.php', 'exchange');
+        this.oauth.qqUrl = BASE_URL + this.oauth.qqUrl;
+        this.oauth.wxUrl = BASE_URL + this.oauth.wxUrl;
+        this.oauth.wbUrl = BASE_URL + this.oauth.wbUrl;
+        Cookies.set('redirect_uri', redirect_uri, { expires: 7, path: '/' })
       }
     },
     created() {

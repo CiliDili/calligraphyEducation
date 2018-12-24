@@ -4,10 +4,7 @@
     <van-cell-group class="exchange-code">
       <van-field v-model="value" placeholder="兑换码" />
     </van-cell-group>
-   <!--  <van-button type="danger" size="large" class="exchange-btn" @click="getInviteCode">
-       立即兑换
-      </van-button> -->
-    <div class='exchange-btn' @click="getInviteCode">立即兑换</div>
+    <div class='exchange-btn'><span @click="getInviteCode">兑换</span></div>
   </div>
 </template>
 <script>
@@ -16,7 +13,6 @@ import { CouponCell, CouponList } from 'vant';
 import {bindInviteCode} from "@/api/bindInviteCode";
 import Cookies from 'js-cookie';
 import axios from "axios";
-//import { bindInviteCode } from "@/api/bindInviteCode";
  
 export default {
   name: "exchange",
@@ -28,19 +24,35 @@ export default {
   },
 
   methods: {
+    getCode() {
+      var data = {
+         // to_user_id: Cookies.get('to_user_id'),
+         invite_code:this.value,
+       };
+      axios.defaults.headers['token'] = Cookies.get('commonToken');
+      bindInviteCode(data).then(response => {
+        alert(response.data.code)
+        if (response.data.code == 0) {
+
+          Cookies.get('user_info', response.data.data.user_info, { expires: 1 });
+          console.log(response.data.data.user_info)
+          this.$router.push({ name: 'success' })
+        } else {
+          console.log("不成功");
+        }
+        
+      })
+    },
     getInviteCode() {
       var data = {
-         to_user_id: Cookies.get('to_user_id'),
+         // to_user_id: Cookies.get('to_user_id'),
          invite_code:this.value,
-          reg_from: "6",
-          client_sys: '',
-          version: '2.3.0'
        };
-       console.log(data.to_user_id)
-      // axios.defaults.headers['token'] = Cookies.get('commonToken');
+      axios.defaults.headers['token'] = Cookies.get('commonToken');
       bindInviteCode(data).then(response => {
         if (response.data.code == 0) {
-          console.log(this.invite_code)
+          Cookies.get('user_info', response.data.data.user_info, { expires: 1 });
+          console.log(response.data.data.user_info)
           this.$router.push({ name: 'success' })
         } else {
           console.log("不成功");

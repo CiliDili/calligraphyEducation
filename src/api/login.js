@@ -9,7 +9,7 @@ export function login(params) {
 
 export function loginQQ(params) {
   return request({
-    url: "/Users/oauth_login?type=weixin",
+    url: "/Users/oauth_login?type=qq",
     method: "post",
     data: params
   });
@@ -17,7 +17,7 @@ export function loginQQ(params) {
 
 export function loginWX(params) {
   return request({
-    url: "/Users/oauth_login?type=qq",
+    url: "/Users/oauth_login?type=weixin",
     method: "post",
     data: params
   });

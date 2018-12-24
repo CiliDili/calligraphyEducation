@@ -3,7 +3,8 @@ import qs from 'qs';
 import Cookies from 'js-cookie';
 const BASE_URL = $_$.BASE_URL;
 let typeData = '';
-//let commonToken = Cookies.get('commonToken');
+let commonToken = Cookies.get('commonToken');
+
 const _axios = axios.create({
  baseURL: BASE_URL, // api的base_url
   transformRequest: [function(data) {
@@ -33,8 +34,8 @@ _axios.interceptors.request.use(
     config[typeData].client_sys = config[typeData].client_sys ? config[typeData].client_sys : $_$.client_sys;
     config[typeData].reg_from = config[typeData].reg_from ? config[typeData].reg_from : $_$.reg_from;
     config[typeData].version = config[typeData].version ? config[typeData].version : $_$.version;
-    config[typeData].device_id = config[typeData].device_id ? config[typeData].device_id : $_$.device_id;
-    config[typeData].user_type = config[typeData].user_type ? config[typeData].user_type : $_$.user_type;
+    //config[typeData].device_id = config[typeData].device_id ? config[typeData].device_id : $_$.device_id;
+    //config[typeData].user_type = config[typeData].user_type ? config[typeData].user_type : $_$.user_type;
     return config;
   },
   error => {
@@ -43,5 +44,31 @@ _axios.interceptors.request.use(
   }
 );
 // respone interceptor
+_axios.interceptors.response.use(
+  response => {
+    if (response.data.code == -100001 || response.data.code == -100002 || response.data.code == -100003) {
+       Cookies.remove('user_id');
+       Message({
+          message: '您的账号长时间未使用或已在其它设备登录，请重新登录',
+          type: "error",
+          duration: 5 * 1000
+       });
+       router.push({ path: "/login" });
+       return;
+    }
+    else{
+       return response;
+    }
+  },
+  error => {
+    console.log("err" + error);
+    Message({
+      message: error.message,
+      type: "error",
+      duration: 5 * 1000
+    });
+    return Promise.reject(error);
+  }
+);
 
 export default _axios;

@@ -113,6 +113,7 @@ export default {
         client_sys: '',
         version: '2.3.0'
       };
+      axios.defaults.headers['token'] = Cookies.get('commonToken');
       forgetCode(params).then(response => {
         if (response.data.code == 0) {
           this.$router.push({ name: 'login' })
