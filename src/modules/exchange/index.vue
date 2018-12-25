@@ -24,35 +24,21 @@ export default {
   },
 
   methods: {
-    getCode() {
-      var data = {
-         // to_user_id: Cookies.get('to_user_id'),
-         invite_code:this.value,
-       };
-      axios.defaults.headers['token'] = Cookies.get('commonToken');
-      bindInviteCode(data).then(response => {
-        alert(response.data.code)
-        if (response.data.code == 0) {
-
-          Cookies.get('user_info', response.data.data.user_info, { expires: 1 });
-          console.log(response.data.data.user_info)
-          this.$router.push({ name: 'success' })
-        } else {
-          console.log("不成功");
-        }
-        
-      })
-    },
     getInviteCode() {
+      let user_info = Cookies.get('user_info');
+      let user_id = Cookies.get('user_id');
+      let use_nid = user_id ? user_id:user_info;
+   var strcookie = document.cookie;
+  console.log(strcookie);
       var data = {
-         // to_user_id: Cookies.get('to_user_id'),
+         user_nid: user_nid,         
          invite_code:this.value,
        };
+     
       axios.defaults.headers['token'] = Cookies.get('commonToken');
       bindInviteCode(data).then(response => {
         if (response.data.code == 0) {
-          Cookies.get('user_info', response.data.data.user_info, { expires: 1 });
-          console.log(response.data.data.user_info)
+          console.log("成功了")
           this.$router.push({ name: 'success' })
         } else {
           console.log("不成功");

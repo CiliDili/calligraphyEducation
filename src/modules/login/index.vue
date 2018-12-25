@@ -154,9 +154,10 @@
            login(params).then(response => {
              if(response.data.code == 0) {
                Cookies.set('user_id', response.data.data.id, { expires: 1 });
+               //Cookies.set('user_info', '', { expires: 1 });
                //Cookies.set('to_user_id', response.data.data.id, { expires: 1 });
                Cookies.set('commonToken', response.data.data.token, { expires: 1 });
-               this.$router.push({ name: 'exchange' })
+               this.$router.push({ name: 'exchange' });
              }else{
                Toast.fail({
                  duration: 1000,       // 持续展示 toast
@@ -238,9 +239,9 @@
   }
 
   .login-btn {
-    width: 90%;
+    width: 90%!important;
     opacity: 0.3;
-    border-radius: 4px;
+    border-radius: 4px!important;
   }
   .login-btn-show {
     width: 90%;
