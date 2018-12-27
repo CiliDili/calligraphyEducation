@@ -47,8 +47,9 @@
 import { Field, Cell, CellGroup, Button, Icon, Row, Col } from 'vant';
 import Vue from 'vue';
 import md5 from "blueimp-md5";
-import { register } from "@/api/register";
+import { register,sendMsg,phoneReg } from "@/api/register";
 Vue.use(Field).use(Cell).use(CellGroup).use(Button).use(Icon).use(Row).use(Col);
+import {Toast} from 'vant';
 // import axios from "axios";
 // import Cookies from "js-cookie";
 import validator from '@common/utils/validator'
@@ -122,7 +123,6 @@ export default {
       this.errorMsg[obj] = '';
     },
     blurValue(){
-      console.log(221)
       // this.validate((errors) => {
       //     console.log(errors);
       //     if(!errors){
@@ -142,10 +142,27 @@ export default {
     sendMobileCode() {
       this.validate(errors => {
         if (!errors) {
+          var params = {
+            phone: this.data.mobile,
+          };
+          
+          sendMsg(params).then(response => {
+            if (response.data.code == 0) {
+              console.log("发送验证码")
+            } else {
+               Toast.fail({
+                 duration: 1000,       // 持续展示 toast
+                 forbidClick: true, // 禁用背景点击
+                 loadingType: 'circular',
+                 message: response.data.message
+               });
+            }
+          });
           // Toast('发送成功');
           this.dialogVisible = true;
           this.countdown = 60;
-          this.countdownSubtract();
+          this.countdownSubtract();   
+          
         }
       }, 'mobile')
       // this.validate(errors => {
@@ -191,16 +208,33 @@ export default {
       this.validate((errors, fields) => {
         if(!errors){
           var params = {
-            mobile: this.data.mobile,
+            phone: this.data.mobile,
             passwd: md5(this.data.password),
 
           };
+          phoneReg(params).then(response => {
+            if (response.data.code == 0) {
+              console.log("该用户是否注册")
+            } else {
+               Toast.fail({
+                 duration: 1000,       // 持续展示 toast
+                 forbidClick: true, // 禁用背景点击
+                 loadingType: 'circular',
+                 message: response.data.message
+               });
+            }
+          });
           register(params).then(response => {
             if (response.data.code == 0) {
-              console.log(111)
+              console.log("注册成功")
               this.$router.push({ name: 'login' })
             } else {
-
+                Toast.fail({
+                 duration: 1000,       // 持续展示 toast
+                 forbidClick: true, // 禁用背景点击
+                 loadingType: 'circular',
+                 message: response.data.message
+               });
             }
           });
         }

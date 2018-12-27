@@ -2,23 +2,26 @@
   <div class="forget_main">
     <h3>找回密码</h3>
     <van-cell-group>
-      <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear" class="phone"></van-field>
+      <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear" class="phone" @keyup="getInputValue"></van-field>
       <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''" class="code">
-        <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger" class="send_code">
+        <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger" :class="dialogVisible ? 'send_code_show' : 'send_code'">
           {{ countdown ? countdown + 's' : '发送验证码'}}
         </van-button>
       </van-field>
       <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" class="password" />
     </van-cell-group>
     <!-- <van-button type="danger" size="large" class="forget-btn" @click="submitNewCode('codeForm',codeForm)">找回密码</van-button> -->
-    <div class="forget-btn" @click="forgetCode">找回密码</div>
+    <div :class="registerVisible ? 'forget-btn-show' : 'forget-btn'" @click="forgetCode">找回密码</div>
   </div>
 </template>
 <script>
 import { Field, Cell, CellGroup, Button, Icon, Row, Col } from 'vant';
 import Vue from 'vue';
 import md5 from "blueimp-md5";
-import { forgetCode } from "@/api/forgetCode";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { forgetCode, sendMsg, phoneReg } from "@/api/forgetCode";
+import { Toast } from 'vant';
 Vue.use(Field).use(Cell).use(CellGroup).use(Button).use(Icon).use(Row).use(Col);
 import validator from '@common/utils/validator'
 
@@ -27,6 +30,8 @@ export default {
   data() {
     return {
       countdown: 0,
+      dialogVisible: true,
+      registerVisible: true,
       errorMsg: {
         name: '',
         mobile: '',
@@ -70,10 +75,33 @@ export default {
     }
   },
   methods: {
+    getInputValue() {
+      if (this.data.mobile.length >= 1) {
+        this.dialogVisible = false;
+        this.registerVisible = false;
+      }
+    },
     sendMobileCode() {
       this.validate(errors => {
         if (!errors) {
+          var params = {
+            phone: this.data.mobile,
+          };
+
+          sendMsg(params).then(response => {
+            if (response.data.code == 0) {
+              console.log("发送验证码")
+            } else {
+              Toast.fail({
+                duration: 1000, // 持续展示 toast
+                forbidClick: true, // 禁用背景点击
+                loadingType: 'circular',
+                message: response.data.message
+              });
+            }
+          });
           // Toast('发送成功');
+          this.dialogVisible = true;
           this.countdown = 60;
           this.countdownSubtract();
         }
@@ -109,18 +137,32 @@ export default {
       var params = {
         mobile: this.data.mobile,
         newpasswd: md5(this.data.password),
-        reg_from: "6",
-        client_sys: '',
-        version: '2.3.0'
       };
+      console.log(params.mobile)
       axios.defaults.headers['token'] = Cookies.get('commonToken');
+      // phoneReg(params).then(response => {
+      //       if (response.data.code == 0) {
+      //         console.log("找回密码")
+      //       } else {
+      //          Toast.fail({
+      //            duration: 1000,       // 持续展示 toast
+      //            forbidClick: true, // 禁用背景点击
+      //            loadingType: 'circular',
+      //            message: response.data.message
+      //          });
+      //       }
+      //     });
       forgetCode(params).then(response => {
         if (response.data.code == 0) {
+          console.log(response.data)
           this.$router.push({ name: 'login' })
         } else {
-          console.log(333);
-          this.$dialog.alert({
-            message: '弹窗内容'
+          console.log()
+          Toast.fail({
+            duration: 1000, // 持续展示 toast
+            forbidClick: true, // 禁用背景点击
+            loadingType: 'circular',
+            message: response.data.message
           });
         }
       });
@@ -137,15 +179,35 @@ h3 {
   margin: 30px 0;
 }
 
-.forget-btn {
+.forget-btn,
+.forget-btn-show {
   width: 90%;
-  background: #b4272d;
   margin-top: 25px;
   border-radius: 4px;
   line-height: 48px;
   color: #fff;
   height: 48px;
   margin: 25px auto;
+}
+
+.forget-btn {
+  background: #b4272d;
+}
+
+.forget-btn-show {
+  background: #b4272d;
+  opacity: 0.3
+}
+
+.send_code {
+  background: #b4272d;
+}
+
+.send_code_show {
+  background: #fff;
+  color: #c7c7c7;
+  border: 1px solid #c7c7c7;
+  border-radius: 4px;
 }
 
 .form_item {

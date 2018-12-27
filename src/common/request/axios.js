@@ -30,7 +30,7 @@ _axios.interceptors.request.use(
       typeData = 'data';
     }
     // config[typeData].user_id = Cookies.get('user_id') ? Cookies.get('user_id') : '';
-    config[typeData].user_id = Cookies.get('user_id') ? Cookies.get('user_id') : '';
+    //config[typeData].user_id = Cookies.get('user_id') ? Cookies.get('user_id') : '';
     config[typeData].client_sys = config[typeData].client_sys ? config[typeData].client_sys : $_$.client_sys;
     config[typeData].reg_from = config[typeData].reg_from ? config[typeData].reg_from : $_$.reg_from;
     config[typeData].version = config[typeData].version ? config[typeData].version : $_$.version;

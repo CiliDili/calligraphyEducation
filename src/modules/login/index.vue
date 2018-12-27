@@ -201,6 +201,7 @@
         this.oauth.wxUrl = BASE_URL + this.oauth.wxUrl;
         this.oauth.wbUrl = BASE_URL + this.oauth.wbUrl;
         Cookies.set('redirect_uri', redirect_uri, { expires: 7, path: '/' })
+
       }
     },
     created() {
@@ -246,6 +247,7 @@
   .login-btn-show {
     width: 90%;
     border-radius: 4px;
+    background-color:#b4272d;
   }
 
   .phone {

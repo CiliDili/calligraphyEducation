@@ -9,32 +9,52 @@
 </template>
 <script>
 import Vue from 'vue';
+import qs from 'qs';
 import { CouponCell, CouponList } from 'vant';
-import {bindInviteCode} from "@/api/bindInviteCode";
+import { bindInviteCode } from "@/api/bindInviteCode";
 import Cookies from 'js-cookie';
 import axios from "axios";
- 
+
 export default {
   name: "exchange",
   data() {
     return {
-      invite_code:'',
-      value:'',
+      invite_code: '',
+      value: '',
     }
   },
 
   methods: {
     getInviteCode() {
-      let user_info = Cookies.get('user_info');
-      let user_id = Cookies.get('user_id');
-      let use_nid = user_id ? user_id:user_info;
-   var strcookie = document.cookie;
-  console.log(strcookie);
+      // 正常账号密码登录获取user_id ,第三方登录获取后台存储的cookies里的user_info的user_id      
+      let user_id = Cookies.get('user_id') || "";
+      let user_nid = "";
+      let obj = Cookies.get('user_info') || "";
+      let userInfo = "";
+      let user_info = "";
+
+      if (obj == "") {
+        userInfo = ""
+      } else {
+        Cookies.set("user_id", '');
+        userInfo = JSON.parse(obj);
+        user_info = userInfo.data.id || "";
+      }
+      console.log(userInfo.data.id)
+
+      if (user_id !== "") {
+        user_nid = user_id;
+      } else {
+        user_nid = user_info;
+      }
+      console.log(user_nid)
+
+      //取不到cookies里的user_info 目的：取到cookies里的user_info,解析其中的user_id,传到data中。
       var data = {
-         user_nid: user_nid,         
-         invite_code:this.value,
-       };
-     
+        user_id: user_nid,
+        invite_code: this.value,
+      };
+
       axios.defaults.headers['token'] = Cookies.get('commonToken');
       bindInviteCode(data).then(response => {
         if (response.data.code == 0) {
@@ -43,7 +63,7 @@ export default {
         } else {
           console.log("不成功");
         }
-        
+
       })
     },
   }
@@ -52,15 +72,16 @@ export default {
 </script>
 <style>
 h3 {
-  margin: 30px 0; 
+  margin: 30px 0;
 }
+
 .exchange-code {
   line-height: 48px;
   margin-bottom: 40px;
 }
 
 .exchange-btn {
- width: 90%;
+  width: 90%;
   background: #b4272d;
   margin-top: 25px;
   border-radius: 4px;

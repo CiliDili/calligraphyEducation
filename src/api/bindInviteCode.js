@@ -1,8 +1,8 @@
 import request from "@common/request/axios";
-export function bindInviteCode(params) {
+export function bindInviteCode(data) {
   return request({
     url: "/Users/bind_invite_code",
-    method: "post",
-    data: params
+    method: "get",
+    params: data
   });
 }
