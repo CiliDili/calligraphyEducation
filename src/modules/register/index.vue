@@ -210,7 +210,7 @@ export default {
           var params = {
             phone: this.data.mobile,
             passwd: md5(this.data.password),
-
+            device_id: '000',
           };
           phoneReg(params).then(response => {
             if (response.data.code == 0) {

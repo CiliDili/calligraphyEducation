@@ -47,11 +47,11 @@
           <img src="../../assets/img/qq.png">
         </a>
       </van-col>
-      <van-col span="6">
+      <!-- <van-col span="6">
         <a :href="oauth.wbUrl">
           <img src="../../assets/img/weibo.png">
         </a>
-      </van-col>
+      </van-col> -->
     </van-row>
   </div>
 </template>
@@ -90,7 +90,7 @@
           password: [{validator: validatePassword}]
         },
         loginForm: {
-          phone: "18801295246",
+          phone: "",//18801295246
           password: ""//qaz123
         },
         errorMsg: {
@@ -245,9 +245,9 @@
     border-radius: 4px!important;
   }
   .login-btn-show {
-    width: 90%;
-    border-radius: 4px;
-    background-color:#b4272d;
+    width: 90%!important;
+    border-radius: 4px!important;
+    background-color:#b4272d!important;
   }
 
   .phone {
@@ -260,7 +260,6 @@
 
   .register {
     margin-top: 25px;
-
     font-size: 14px;
     color: #999999;
   }
