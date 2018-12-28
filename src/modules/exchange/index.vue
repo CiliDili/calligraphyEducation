@@ -14,6 +14,7 @@ import { CouponCell, CouponList } from 'vant';
 import { bindInviteCode } from "@/api/bindInviteCode";
 import Cookies from 'js-cookie';
 import axios from "axios";
+import { Toast } from 'vant';
 
 export default {
   name: "exchange",
@@ -58,12 +59,15 @@ export default {
       axios.defaults.headers['token'] = Cookies.get('commonToken');
       bindInviteCode(data).then(response => {
         if (response.data.code == 0) {
-          console.log("成功了")
           this.$router.push({ name: 'success' })
         } else {
-          console.log("不成功");
+          Toast.fail({
+            duration: 1000, // 持续展示 toast
+            forbidClick: true, // 禁用背景点击
+            loadingType: 'circular',
+            message: response.data.message
+          });
         }
-
       })
     },
   }

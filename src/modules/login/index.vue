@@ -10,6 +10,7 @@
                    :error-message="errorMsg.phone"
                    @focus="focusValidate('phone')"
                    @blur="blurValidate"
+                   @keyup="getInputValue"
         />
         <van-field v-model="loginForm.password"
                    type="password"
@@ -109,13 +110,18 @@
       blurValidate() {
         this.validate((errors, fields) => {
           console.log(errors);
-          if(!errors){
-            this.dialogVisible = false;
-          }else{
-            this.dialogVisible = true;
-          }
+          // if(!errors){
+          //   this.dialogVisible = false;
+          // }else{
+          //   this.dialogVisible = true;
+          // }
         })
       },
+      getInputValue(){
+         if(this.loginForm.phone.length>=1){
+          this.dialogVisible = false;
+        }
+    },
       /*输入框获取焦点后,清空页面错误数据*/
       focusValidate(obj) {
         this.errorMsg[obj] = '';
