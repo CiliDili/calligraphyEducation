@@ -20,8 +20,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/index.php': {
-         target: 'http://twapi.fangzhengshufa.com',
-        //target: 'http://wxdev.fangzhengshufa.com',
+         //target: 'http://twapi.fangzhengshufa.com',
+        target: 'http://wxdev.fangzhengshufa.com',
         // pathRewrite: {'^/portal/file' : ''},
         changeOrigin: true
       }

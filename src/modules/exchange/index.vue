@@ -14,7 +14,7 @@ import { CouponCell, CouponList } from 'vant';
 import { bindInviteCode } from "@/api/bindInviteCode";
 import Cookies from 'js-cookie';
 import axios from "axios";
-import { Toast } from 'vant';
+import {Toast} from 'vant';
 
 export default {
   name: "exchange",
@@ -41,32 +41,32 @@ export default {
         userInfo = JSON.parse(obj);
         user_info = userInfo.data.id || "";
       }
-      console.log(userInfo.data.id)
+      //console.log(userInfo.data.id)
 
-      if (user_id !== "") {
+      if (user_id !== "") { 
         user_nid = user_id;
       } else {
         user_nid = user_info;
       }
-      console.log(user_nid)
+      //console.log(user_nid)
 
       //取不到cookies里的user_info 目的：取到cookies里的user_info,解析其中的user_id,传到data中。
-      var data = {
+      var params = {
         user_id: user_nid,
         invite_code: this.value,
       };
 
       axios.defaults.headers['token'] = Cookies.get('commonToken');
-      bindInviteCode(data).then(response => {
+      bindInviteCode(params).then(response => {
         if (response.data.code == 0) {
           this.$router.push({ name: 'success' })
         } else {
           Toast.fail({
-            duration: 1000, // 持续展示 toast
-            forbidClick: true, // 禁用背景点击
-            loadingType: 'circular',
-            message: response.data.message
-          });
+                 duration: 1000,       // 持续展示 toast
+                 forbidClick: true, // 禁用背景点击
+                 loadingType: 'circular',
+                 message: response.data.message
+               });
         }
       })
     },

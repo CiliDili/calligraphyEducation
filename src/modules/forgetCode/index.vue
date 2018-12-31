@@ -5,13 +5,13 @@
       <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" icon="clear" class="phone" @keyup="getInputValue"></van-field>
       <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @click-icon="data.code = ''" class="code">
         <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger" :class="dialogVisible ? 'send_code_show' : 'send_code'">
-          {{ countdown ? countdown + 's' : '发送验证码'}}
+          {{ countdown ? countdown + 's重新获取' : '发送验证码'}}
         </van-button>
       </van-field>
       <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @click-icon="data.password = ''" class="password" />
     </van-cell-group>
     <!-- <van-button type="danger" size="large" class="forget-btn" @click="submitNewCode('codeForm',codeForm)">找回密码</van-button> -->
-    <div :class="registerVisible ? 'forget-btn-show' : 'forget-btn'" @click="forgetCode">找回密码</div>
+    <div :class="forgetVisible ? 'forget-btn-show' : 'forget-btn'" @click="forgetCode">找回密码</div>
   </div>
 </template>
 <script>
@@ -31,7 +31,7 @@ export default {
     return {
       countdown: 0,
       dialogVisible: true,
-      registerVisible: true,
+      forgetVisible: true,
       errorMsg: {
         name: '',
         mobile: '',
@@ -78,7 +78,10 @@ export default {
     getInputValue() {
       if (this.data.mobile.length >= 1) {
         this.dialogVisible = false;
-        this.registerVisible = false;
+        this.forgetVisible = false;
+      }else{
+        this.dialogVisible = true;
+        this.forgetVisible = true;
       }
     },
     sendMobileCode() {
@@ -135,29 +138,28 @@ export default {
     },
     forgetCode(formName) {
       var params = {
-        mobile: this.data.mobile,
+        phone: this.data.mobile,
         newpasswd: md5(this.data.password),
+        device_id: '000',
+        verify_code:this.data.code,
       };
-      console.log(params.mobile)
       axios.defaults.headers['token'] = Cookies.get('commonToken');
-      // phoneReg(params).then(response => {
-      //       if (response.data.code == 0) {
-      //         console.log("找回密码")
-      //       } else {
-      //          Toast.fail({
-      //            duration: 1000,       // 持续展示 toast
-      //            forbidClick: true, // 禁用背景点击
-      //            loadingType: 'circular',
-      //            message: response.data.message
-      //          });
-      //       }
-      //     });
+      phoneReg(params).then(response => {
+            if (response.data.code == 0) {
+              console.log("手机号是否已注册")
+            } else {
+               Toast.fail({
+                 duration: 1000,       // 持续展示 toast
+                 forbidClick: true, // 禁用背景点击
+                 loadingType: 'circular',
+                 message: response.data.message
+               });
+            }
+          });
       forgetCode(params).then(response => {
         if (response.data.code == 0) {
-          console.log(response.data)
           this.$router.push({ name: 'login' })
         } else {
-          console.log()
           Toast.fail({
             duration: 1000, // 持续展示 toast
             forbidClick: true, // 禁用背景点击
@@ -191,21 +193,21 @@ h3 {
 }
 
 .forget-btn {
-  background: #b4272d;
+  background: #b4272d!important;
 }
 
 .forget-btn-show {
-  background: #b4272d;
-  opacity: 0.3
+  background: #b4272d!important;
+  opacity: 0.3!important;
 }
 
 .send_code {
-  background: #b4272d;
+  background: #b4272d!important;
 }
 
 .send_code_show {
-  background: #fff;
-  color: #c7c7c7;
+  background: #fff!important;
+  color: #c7c7c7!important;
   border: 1px solid #c7c7c7;
   border-radius: 4px;
 }

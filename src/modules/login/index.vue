@@ -10,7 +10,7 @@
                    :error-message="errorMsg.phone"
                    @focus="focusValidate('phone')"
                    @blur="blurValidate"
-                   @keyup="getInputValue"
+                  
         />
         <van-field v-model="loginForm.password"
                    type="password"
@@ -19,6 +19,7 @@
                    :error-message="errorMsg.password"
                    @focus="focusValidate('password')"
                    @blur="blurValidate"
+                   @keyup="getInputValue"
         />
       </van-cell-group>
       <van-button type="danger"
@@ -227,7 +228,7 @@
   }
 
   h3 {
-    margin: 30px 0;
+    margin:10px 0 30px 0;
   }
 
   .form_item {

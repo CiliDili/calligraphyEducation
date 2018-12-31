@@ -7,37 +7,13 @@
         v-model="data.name"
         :error-message="errorMsg.name"
       ></van-field> -->
-      <van-field type="tel"
-                 placeholder="手机号(仅中国大陆)"
-                 v-model="data.mobile"
-                 :error-message="errorMsg.mobile"
-                 @click-icon="data.mobile = ''"
-                 @focus="focusValidate('mobile')"
-                 @blur="blurValue"
-                 @keyup="getInputValue"
-                 icon="clear"></van-field>
-      <van-field center v-model="data.code"
-                 placeholder="验证码"
-                 icon="clear"
-                 :error-message="errorMsg.code"
-                 @focus="focusValidate('code')"
-                 @click-icon="data.code = ''">
-        <van-button slot="button"
-                    size="small"
-                    :disabled="countdown > 0"
-                    @click="sendMobileCode"
-                    type="danger"
-                   :class="dialogVisible ? 'send_code_show' : 'send_code'">
+      <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" @focus="focusValidate('mobile')" @blur="blurValue" @keyup="getInputValue" icon="clear"></van-field>
+      <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @focus="focusValidate('code')" @click-icon="data.code = ''">
+        <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger" :class="dialogVisible ? 'send_code_show' : 'send_code'">
           {{ countdown ? countdown + 's重新获取' : '发送验证码'}}
         </van-button>
       </van-field>
-      <van-field v-model="data.password"
-                 type="password"
-                 placeholder="设置密码(6-18位)"
-                 :error-message="errorMsg.password"
-                 @focus="focusValidate('password')"
-                 @blur="blurValue"
-                 @click-icon="data.password = ''" />
+      <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @focus="focusValidate('password')" @blur="blurValue" @click-icon="data.password = ''" />
     </van-cell-group>
     <div @click="register" :class="registerVisible ? 'register-btn-show' : 'register-btn'">注册</div>
   </div>
@@ -47,9 +23,9 @@
 import { Field, Cell, CellGroup, Button, Icon, Row, Col } from 'vant';
 import Vue from 'vue';
 import md5 from "blueimp-md5";
-import { register,sendMsg,phoneReg } from "@/api/register";
+import { register, sendMsg, phoneReg } from "@/api/register";
 Vue.use(Field).use(Cell).use(CellGroup).use(Button).use(Icon).use(Row).use(Col);
-import {Toast} from 'vant';
+import { Toast } from 'vant';
 // import axios from "axios";
 // import Cookies from "js-cookie";
 import validator from '@common/utils/validator'
@@ -59,8 +35,8 @@ export default {
   data() {
     return {
       countdown: 0,
-      dialogVisible:true,
-      registerVisible:true,
+      dialogVisible: true,
+      registerVisible: true,
       errorMsg: {
         mobile: '',
         password: '',
@@ -122,7 +98,7 @@ export default {
     focusValidate(obj) {
       this.errorMsg[obj] = '';
     },
-    blurValue(){
+    blurValue() {
       // this.validate((errors) => {
       //     console.log(errors);
       //     if(!errors){
@@ -132,11 +108,14 @@ export default {
       //     }
       //   })
     },
-    getInputValue(){
-         if(this.data.mobile.length>=1){
-          this.dialogVisible = false;
-          this.registerVisible = false;
-        }
+    getInputValue() {
+      if (this.data.mobile.length >= 1) {
+        this.dialogVisible = false;
+        this.registerVisible = false;
+      }else{
+        this.dialogVisible = true;
+        this.registerVisible = true;
+      }
     },
     /*发送验证码*/
     sendMobileCode() {
@@ -145,24 +124,24 @@ export default {
           var params = {
             phone: this.data.mobile,
           };
-          
+
           sendMsg(params).then(response => {
             if (response.data.code == 0) {
               console.log("发送验证码")
             } else {
-               Toast.fail({
-                 duration: 1000,       // 持续展示 toast
-                 forbidClick: true, // 禁用背景点击
-                 loadingType: 'circular',
-                 message: response.data.message
-               });
+              Toast.fail({
+                duration: 1000, // 持续展示 toast
+                forbidClick: true, // 禁用背景点击
+                loadingType: 'circular',
+                message: response.data.message
+              });
             }
           });
           // Toast('发送成功');
           this.dialogVisible = true;
           this.countdown = 60;
-          this.countdownSubtract();   
-          
+          this.countdownSubtract();
+
         }
       }, 'mobile')
       // this.validate(errors => {
@@ -206,7 +185,7 @@ export default {
     },
     register(formName) {
       this.validate((errors, fields) => {
-        if(!errors){
+        if (!errors) {
           var params = {
             phone: this.data.mobile,
             passwd: md5(this.data.password),
@@ -216,25 +195,24 @@ export default {
             if (response.data.code == 0) {
               console.log("该用户是否注册")
             } else {
-               Toast.fail({
-                 duration: 1000,       // 持续展示 toast
-                 forbidClick: true, // 禁用背景点击
-                 loadingType: 'circular',
-                 message: response.data.message
-               });
+              Toast.fail({
+                duration: 1000, // 持续展示 toast
+                forbidClick: true, // 禁用背景点击
+                loadingType: 'circular',
+                message: response.data.message
+              });
             }
           });
           register(params).then(response => {
             if (response.data.code == 0) {
-              console.log("注册成功")
               this.$router.push({ name: 'login' })
             } else {
-                Toast.fail({
-                 duration: 1000,       // 持续展示 toast
-                 forbidClick: true, // 禁用背景点击
-                 loadingType: 'circular',
-                 message: response.data.message
-               });
+              Toast.fail({
+                duration: 1000, // 持续展示 toast
+                forbidClick: true, // 禁用背景点击
+                loadingType: 'circular',
+                message: response.data.message
+              });
             }
           });
         }
@@ -256,29 +234,35 @@ h3 {
   font-family: PingFangSC-Regular;
 }
 
-.register-btn,.register-btn-show  {
-  width: 90%; 
-  margin-top: 25px;
-  border-radius: 4px;
-  line-height: 48px;
-  color: #fff;
-  height: 48px;
-  margin: 25px auto;
-}
-.register-btn{
-   background: #b4272d;
-}
+.register-btn,
 .register-btn-show {
-  background: #b4272d;
-  opacity: 0.3
+  width: 90% !important;
+  margin-top: 25px !important;
+  border-radius: 4px !important;
+  line-height: 48px !important;
+  color: #fff;
+  height: 48px !important;
+  margin: 25px auto !important;
 }
-.send_code{
-   background: #b4272d;
+
+.register-btn {
+  background: #b4272d !important;
 }
-.send_code_show{
-      background: #fff;
-    color: #c7c7c7;
-    border:1px solid #c7c7c7;
-    border-radius:4px;
+
+.register-btn-show {
+  background: #b4272d !important;
+  opacity: 0.3 !important;
 }
+
+.send_code {
+  background: #b4272d !important;
+}
+
+.send_code_show {
+  background: #fff;
+  color: #c7c7c7 !important;
+  border: 1px solid #c7c7c7 !important;
+  border-radius: 4px;
+}
+
 </style>
