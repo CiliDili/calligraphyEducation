@@ -7,15 +7,41 @@
         v-model="data.name"
         :error-message="errorMsg.name"
       ></van-field> -->
-      <van-field type="tel" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" @focus="focusValidate('mobile')" @blur="blurValue" @keyup="getInputValue" icon="clear"></van-field>
-      <van-field center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @focus="focusValidate('code')" @click-icon="data.code = ''">
+      <van-field
+        type="tel"
+        maxlength="11"
+        placeholder="手机号(仅中国大陆)"
+        v-model="data.mobile"
+        :error-message="errorMsg.mobile"
+        @click-icon="data.mobile = ''"
+        @focus="focusValidate('mobile')"
+        @blur="blurValidate"
+        @keyup="getInputValue"
+        icon="clear"></van-field>
+      <van-field
+        maxlength="6"
+        center v-model="data.code"
+        placeholder="验证码"
+        icon="clear"
+        :error-message="errorMsg.code"
+        @focus="focusValidate('code')"
+        @blur="blurValidate"
+        @click-icon="data.code = ''">
         <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger" :class="dialogVisible ? 'send_code_show' : 'send_code'">
           {{ countdown ? countdown + 's重新获取' : '发送验证码'}}
         </van-button>
       </van-field>
-      <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @focus="focusValidate('password')" @blur="blurValue" @click-icon="data.password = ''" />
+      <van-field
+        v-model="data.password"
+        type="password"
+        placeholder="设置密码(6-18位)"
+        :error-message="errorMsg.password"
+        @focus="focusValidate('password')"
+        @blur="blurValidate"
+        @click-icon="data.password = ''" />
     </van-cell-group>
-    <div @click="register" :class="registerVisible ? 'register-btn-show' : 'register-btn'">注册</div>
+    <div @click="register"
+         :class="registerVisible ? 'register-btn-show' : 'register-btn'">注册</div>
   </div>
 </template>
 </template>
@@ -91,6 +117,7 @@ export default {
         password: "",
         code: "",
       },
+      changeMobile: false
     }
   },
   methods: {
@@ -98,19 +125,16 @@ export default {
     focusValidate(obj) {
       this.errorMsg[obj] = '';
     },
-    blurValue() {
-      // this.validate((errors) => {
-      //     console.log(errors);
-      //     if(!errors){
-      //       this.registerVisible = false;
-      //     }else{
-      //       this.registerVisible = true;
-      //     }
-      //   })
+    blurValidate() {
+      this.validate((errors, fields) => {
+        console.log(errors);
+      })
     },
     getInputValue() {
       if (this.data.mobile.length >= 1) {
-        this.dialogVisible = false;
+        if(!this.changeMobile){
+          this.dialogVisible = false;
+        }
         this.registerVisible = false;
       }else{
         this.dialogVisible = true;
@@ -120,11 +144,35 @@ export default {
     /*发送验证码*/
     sendMobileCode() {
       this.validate(errors => {
+        //TODO 发送验证码分三步走 -- 同忘记密码，但未传1.verify_code  2.token
+        // 1.先验证是否格式正确
+        // 2.格式通过后验证手机号的是否存在
+        // 3.以上都通过后，才给用户发送短信。
+
         if (!errors) {
           var params = {
             phone: this.data.mobile,
+            passwd: md5(this.data.password),
+            device_id: '000',
           };
+          phoneReg(params).then(response => {
+            if (response.data.code == 0) {
+              console.log("该用户是否注册")
+            } else {
+              Toast.fail({
+                duration: 1000, // 持续展示 toast
+                forbidClick: true, // 禁用背景点击
+                loadingType: 'circular',
+                message: response.data.message
+              });
+            }
+          });
 
+          console.log(1);
+
+          var params = {
+            phone: this.data.mobile,
+          };
           sendMsg(params).then(response => {
             if (response.data.code == 0) {
               console.log("发送验证码")
@@ -141,7 +189,6 @@ export default {
           this.dialogVisible = true;
           this.countdown = 60;
           this.countdownSubtract();
-
         }
       }, 'mobile')
       // this.validate(errors => {
@@ -155,10 +202,14 @@ export default {
     },
     countdownSubtract() {
       if (this.countdown > 0) {
+        this.changeMobile = true;
         setTimeout(() => {
           this.countdown -= 1;
           this.countdownSubtract()
         }, 1000)
+      }else{
+        this.changeMobile = false;
+        this.dialogVisible = false;
       }
     },
     /**
@@ -190,19 +241,8 @@ export default {
             phone: this.data.mobile,
             passwd: md5(this.data.password),
             device_id: '000',
+            verify_code: this.data.code,
           };
-          phoneReg(params).then(response => {
-            if (response.data.code == 0) {
-              console.log("该用户是否注册")
-            } else {
-              Toast.fail({
-                duration: 1000, // 持续展示 toast
-                forbidClick: true, // 禁用背景点击
-                loadingType: 'circular',
-                message: response.data.message
-              });
-            }
-          });
           register(params).then(response => {
             if (response.data.code == 0) {
               this.$router.push({ name: 'login' })

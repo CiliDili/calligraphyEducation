@@ -228,7 +228,7 @@
   }
 
   h3 {
-    margin:10px 0 30px 0;
+    margin:0px 0 30px 0;
   }
 
   .form_item {
@@ -272,7 +272,7 @@
   }
 
   .otherwise {
-    margin-top: 150px;
+    margin-top: 100px;
     font-size: 12px;
     color: #999999;
   }
