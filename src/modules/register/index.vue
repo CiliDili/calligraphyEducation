@@ -7,43 +7,19 @@
         v-model="data.name"
         :error-message="errorMsg.name"
       ></van-field> -->
-      <van-field
-        type="tel"
-        maxlength="11"
-        placeholder="手机号(仅中国大陆)"
-        v-model="data.mobile"
-        :error-message="errorMsg.mobile"
-        @click-icon="data.mobile = ''"
-        @focus="focusValidate('mobile')"
-        @blur="blurValidate"
-        @keyup="getInputValue"
-        icon="clear"></van-field>
-      <van-field
-        maxlength="6"
-        center v-model="data.code"
-        placeholder="验证码"
-        icon="clear"
-        :error-message="errorMsg.code"
-        @focus="focusValidate('code')"
-        @blur="blurValidate"
-        @click-icon="data.code = ''">
+      <van-field type="tel" maxlength="11" placeholder="手机号(仅中国大陆)" v-model="data.mobile" :error-message="errorMsg.mobile" @click-icon="data.mobile = ''" @focus="focusValidate('mobile')" @blur="blurValidate" @keyup="getInputValue" icon="clear"></van-field>
+      <van-field maxlength="6" center v-model="data.code" placeholder="验证码" icon="clear" :error-message="errorMsg.code" @focus="focusValidate('code')" @blur="blurValidate" @click-icon="data.code = ''">
         <van-button slot="button" size="small" :disabled="countdown > 0" @click="sendMobileCode" type="danger" :class="dialogVisible ? 'send_code_show' : 'send_code'">
           {{ countdown ? countdown + 's重新获取' : '发送验证码'}}
         </van-button>
       </van-field>
-      <van-field
-        v-model="data.password"
-        type="password"
-        placeholder="设置密码(6-18位)"
-        :error-message="errorMsg.password"
-        @focus="focusValidate('password')"
-        @blur="blurValidate"
-        @click-icon="data.password = ''" />
+      <van-field v-model="data.password" type="password" placeholder="设置密码(6-18位)" :error-message="errorMsg.password" @focus="focusValidate('password')" @blur="blurValidate" @click-icon="data.password = ''" />
     </van-cell-group>
-    <div @click="register"
-         :class="registerVisible ? 'register-btn-show' : 'register-btn'">注册</div>
+    <div @click="register" :class="registerVisible ? 'register-btn-show' : 'register-btn'">注册</div>
+        <van-row class="deal">注册即同意遵守<span class="tit">《方正书法用户协议》</span></van-row>
   </div>
-</template>
+ 
+ 
 </template>
 <script>
 import { Field, Cell, CellGroup, Button, Icon, Row, Col } from 'vant';
@@ -132,11 +108,11 @@ export default {
     },
     getInputValue() {
       if (this.data.mobile.length >= 1) {
-        if(!this.changeMobile){
+        if (!this.changeMobile) {
           this.dialogVisible = false;
         }
         this.registerVisible = false;
-      }else{
+      } else {
         this.dialogVisible = true;
         this.registerVisible = true;
       }
@@ -207,7 +183,7 @@ export default {
           this.countdown -= 1;
           this.countdownSubtract()
         }, 1000)
-      }else{
+      } else {
         this.changeMobile = false;
         this.dialogVisible = false;
       }
@@ -266,12 +242,25 @@ export default {
 
 </script>
 <style>
+html {
+    background: #fff;
+     -webkit-tap-highlight-color:#fff;
+}  
 h3 {
   margin: 30px 0;
 }
 
+.van-hairline--top-bottom::after {
+  border-width: 0 !important;
+}
+
+.van-hairline--top-bottom::after {
+  border-bottom-width: 1px !important;
+}
+
 .register_main {
   font-family: PingFangSC-Regular;
+  padding: 0 15px;
 }
 
 .register-btn,
@@ -304,5 +293,14 @@ h3 {
   border: 1px solid #c7c7c7 !important;
   border-radius: 4px;
 }
-
+.deal{
+font-size: 12px;
+color: #999;
+text-align: center;
+line-height: 17px;
+padding-top: 200px;
+}
+.tit{
+  color:#b4272d;
+}
 </style>

@@ -4,7 +4,7 @@
     <van-cell-group class="exchange-code">
       <van-field v-model="value" placeholder="兑换码" />
     </van-cell-group>
-    <div class='exchange-btn'><span @click="getInviteCode">兑换</span></div>
+    <div class='exchange-btn'><span @click="getInviteCode">立即兑换</span></div>
   </div>
 </template>
 <script>
@@ -78,7 +78,17 @@ export default {
 h3 {
   margin: 30px 0;
 }
+html {
+    background: #fff;
+     -webkit-tap-highlight-color:#fff;
+}
 
+.van-hairline--top-bottom::after{
+  border-bottom-width: 1px!important;
+}
+.exchange_main{
+  padding: 0 15px;
+}
 .exchange-code {
   line-height: 48px;
   margin-bottom: 40px;

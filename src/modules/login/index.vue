@@ -5,7 +5,7 @@
     <div>
       <van-cell-group class="form_item">
         <van-field v-model="loginForm.phone"
-                   placeholder="请输入手机号/用户名"
+                   placeholder="手机号/用户名"
                    class="phone"
                    :error-message="errorMsg.phone"
                    @focus="focusValidate('phone')"
@@ -35,9 +35,13 @@
       <van-col span="12"><span @click="toRegister">注册新用户</span></van-col>
     </van-row>
     <!-- 第三方登录 -->
-    <van-row type="flex" justify="center" class="otherwise">
-      <van-col span="12">以其他方式登录</van-col>
-    </van-row>
+    <!-- <van-row type="flex" justify="center"> -->
+      <div class="work-intro otherwise">
+            <div class="title">
+            <h2 class="title-text"><span>以其他方式登录</span></h2>
+            </div>
+</div>
+<!-- </van-row> -->
     <van-row type="flex" justify="center" class="three_method">
       <van-col span="6">
         <a :href="oauth.wxUrl">
@@ -208,7 +212,7 @@
         this.oauth.wxUrl = BASE_URL + this.oauth.wxUrl;
         this.oauth.wbUrl = BASE_URL + this.oauth.wbUrl;
         Cookies.set('redirect_uri', redirect_uri, { expires: 7, path: '/' })
-
+        console.log(redirect_uri)
       }
     },
     created() {
@@ -219,10 +223,25 @@
 
 </script>
 <style>
+html {
+    background: #fff;
+    -webkit-tap-highlight-color:#fff;
+}
+#app{
+   background: #fff;
+   /*padding:15px 0;*/
+}
   .login_main {
     font-family: PingFangSC-Regular;
+        padding: 0 15px;
+       
   }
-
+  .van-hairline--top-bottom::after{
+  border-width: 0!important;
+}
+.van-hairline--top-bottom::after{
+  border-bottom-width: 1px!important;
+}
   .login_main img {
     width: 50%;
   }
@@ -278,7 +297,55 @@
   }
 
   .three_method {
-    margin-top: 50px;
+    margin-top: 35px;
+    margin-bottom: 20px;
   }
+ /* .lines {
+  text-align: center;
+  line-height: 30px;
+  display: flex;
+}
+*/
+/*.lines .line {
+  width: 26%;
+  border-top: 1px solid #d8d8d8;
+  margin-top: 15px;
+      padding: 0 10px;
+}*/
 
+/*.lines #font {
+  margin: auto 10px;
+}
+*/
+.van-hairline--top-bottom::after{
+  border-bottom-width: 1px!important;
+}
+.van-hairline--top-bottom::after{
+  border-width: 0;
+}
+.title-text span {
+    display: block;      /*设置为块级元素会独占一行形成上下居中的效果*/
+    position: relative;  /*定位横线（当横线的父元素）*/
+  font-family: PingFangSC-Regular;
+    color: #999;     
+    font-size: 12px;
+    text-align: center; 
+} 
+
+.title-text span:before, .title-text span:after { 
+    content: ''; 
+    position: absolute;   /*定位背景横线的位置*/
+    top: 50%; 
+    background: #d8d8d8;   /*背景横线颜色*/
+    width: 35%;            /*单侧横线的长度*/
+    height: 1px; 
+} 
+
+.title-text span:before { 
+    left: 0%;              /*调整背景横线的左右距离*/
+} 
+
+.title-text span:after { 
+    right: 0%; 
+}
 </style>

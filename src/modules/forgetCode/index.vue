@@ -40,7 +40,7 @@
         class="password"/>
     </van-cell-group>
     <!-- <van-button type="danger" size="large" class="forget-btn" @click="submitNewCode('codeForm',codeForm)">找回密码</van-button> -->
-    <div :class="forgetVisible ? 'forget-btn-show' : 'forget-btn'" @click="forgetCode">找回密码</div>
+    <div :class="forgetVisible ? 'forget-btn-show' : 'forget-btn'" @click="forgetCode">确定</div>
   </div>
 </template>
 <script>
@@ -243,10 +243,15 @@
 
 </script>
 <style>
+html {
+   -webkit-tap-highlight-color:#fff;
+}
   h3 {
     margin: 30px 0;
   }
-
+	.forget_main{
+		padding: 0 15px;
+	}
   .forget-btn,
   .forget-btn-show {
     width: 90%;
